@@ -1,0 +1,20 @@
+.mainFxmlClass {
+    
+}
+
+.board {
+    -fx-border-color: black;
+}
+
+.darkSpot {
+    -fx-background-color: rgb(198,198,198);
+}
+
+.lightSpot {
+    -fx-background-color: white;
+}
+
+.selected {
+    -fx-border-color: red;
+    -fx-border-width: 2;
+}
