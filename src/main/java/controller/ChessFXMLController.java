@@ -131,7 +131,7 @@ public class ChessFXMLController implements Initializable {
                             nullSelectedPiece();
                         } else {
                             //clicked on another piece
-                            if (availableMoves.contains(new Move(currentPosition, spotCoord))) {
+                            if (availableMoves.contains(new Move(game.getBoard(), currentPosition, spotCoord))) {
                                 //validace jestli můžu figurku vyhodit
                                 //vyhození
                                 game.getBoard().moveTo(currentPiece, spotCoord);;
@@ -147,7 +147,7 @@ public class ChessFXMLController implements Initializable {
                 } else {
                     //spot doesnt contain piece
                     if (currentPiece != null) {
-                        if (availableMoves.contains(new Move(currentPosition, spotCoord))) {
+                        if (availableMoves.contains(new Move(game.getBoard(), currentPosition, spotCoord))) {
                             //validace tahu
                             game.getBoard().moveTo(currentPiece, new Coordinate(x, y));
                             nullSelectedPiece();

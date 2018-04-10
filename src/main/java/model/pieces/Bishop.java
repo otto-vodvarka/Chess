@@ -53,7 +53,7 @@ public class Bishop extends Piece {
         
         //left up diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() - i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() - i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -63,7 +63,7 @@ public class Bishop extends Piece {
         
         //left down diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() + i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() + i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -73,7 +73,7 @@ public class Bishop extends Piece {
         
         //right up diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -83,7 +83,7 @@ public class Bishop extends Piece {
 
         //right down diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {

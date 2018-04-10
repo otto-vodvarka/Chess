@@ -53,25 +53,25 @@ public class Knight extends Piece{
         //square
         for (int i = -1; i <= 1; i++) {
             //up
-            Move moveUp = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - 2));
+            Move moveUp = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - 2));
             if (moveUp.isAtBoard() && isMoveValid(board, moveUp)) {
                 moves.add(moveUp);
             }
             
             //down
-            Move moveDown = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + 2));
+            Move moveDown = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + 2));
             if (moveDown.isAtBoard() && isMoveValid(board, moveDown)) {
                 moves.add(moveDown);
             }
             
             //left
-            Move moveLeft = new Move(myCoord, new Coordinate(myCoord.getX() - 2, myCoord.getY() + i));
+            Move moveLeft = new Move(board, myCoord, new Coordinate(myCoord.getX() - 2, myCoord.getY() + i));
             if (moveLeft.isAtBoard() && isMoveValid(board, moveLeft)) {
                 moves.add(moveLeft);
             }
             
             //right
-            Move moveRight = new Move(myCoord, new Coordinate(myCoord.getX() + 2, myCoord.getY() + i));
+            Move moveRight = new Move(board, myCoord, new Coordinate(myCoord.getX() + 2, myCoord.getY() + i));
             if (moveRight.isAtBoard() && isMoveValid(board, moveRight)) {
                 moves.add(moveRight);
             }

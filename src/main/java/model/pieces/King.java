@@ -30,7 +30,7 @@ public class King extends Piece {
             }
         }else{
             if(board.getSpot(move.getEnd()) != null && !board.getSpot(move.getEnd()).isOccupied()){
-                if(move.isCastling(board, color)){
+                if(move.isCastling()){
                     if (board.IsCastlingAvailable(move, color)) {
                         return true;
                     }
@@ -68,13 +68,13 @@ public class King extends Piece {
         //upper lower line
         for (int i = -1; i <= 1; i++) {
             //upper
-            Move moveUp = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - 1));
+            Move moveUp = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - 1));
             if (moveUp.isAtBoard() && isMoveValid(board, moveUp)) {
                 moves.add(moveUp);
             }
 
             //lower
-            Move moveDown = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + 1));
+            Move moveDown = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + 1));
             if (moveDown.isAtBoard() && isMoveValid(board, moveDown)) {
                 moves.add(moveDown);
             }
@@ -82,12 +82,12 @@ public class King extends Piece {
 
         //sides
         //left
-        Move moveLeft = new Move(myCoord, new Coordinate(myCoord.getX() - 1, myCoord.getY()));
+        Move moveLeft = new Move(board, myCoord, new Coordinate(myCoord.getX() - 1, myCoord.getY()));
         if (moveLeft.isAtBoard() && isMoveValid(board, moveLeft)) {
             moves.add(moveLeft);
         }
         //right
-        Move moveRight = new Move(myCoord, new Coordinate(myCoord.getX() + 1, myCoord.getY()));
+        Move moveRight = new Move(board, myCoord, new Coordinate(myCoord.getX() + 1, myCoord.getY()));
         if (moveRight.isAtBoard() && isMoveValid(board, moveRight)) {
             moves.add(moveRight);
         }
@@ -95,23 +95,23 @@ public class King extends Piece {
         //castling
         if (color == Color.WHITE) {
             //white
-            Move castlingLeft = new Move(myCoord, new Coordinate(myCoord.getX() - 2, 7));
+            Move castlingLeft = new Move(board, myCoord, new Coordinate(myCoord.getX() - 2, 7));
             if (castlingLeft.isAtBoard() && isMoveValid(board, castlingLeft)) {
                 moves.add(castlingLeft);
             }
 
-            Move castlingRight = new Move(myCoord, new Coordinate(myCoord.getX() + 2, 7));
+            Move castlingRight = new Move(board, myCoord, new Coordinate(myCoord.getX() + 2, 7));
             if (castlingRight.isAtBoard() && isMoveValid(board, castlingRight)) {
                 moves.add(castlingRight);
             }
         } else {
             //black
-            Move castlingLeft = new Move(myCoord, new Coordinate(myCoord.getX() - 2, 0));
+            Move castlingLeft = new Move(board, myCoord, new Coordinate(myCoord.getX() - 2, 0));
             if (castlingLeft.isAtBoard() && isMoveValid(board, castlingLeft)) {
                 moves.add(castlingLeft);
             }
 
-            Move castlingRight = new Move(myCoord, new Coordinate(myCoord.getX() + 2, 0));
+            Move castlingRight = new Move(board, myCoord, new Coordinate(myCoord.getX() + 2, 0));
             if (castlingRight.isAtBoard() && isMoveValid(board, castlingRight)) {
                 moves.add(castlingRight);
             }

@@ -9,6 +9,7 @@ import model.pieces.King;
 import model.pieces.Piece;
 import model.pieces.Rook;
 import java.util.Objects;
+import model.pieces.Pawn;
 
 /**
  *
@@ -16,19 +17,25 @@ import java.util.Objects;
  */
 public class Move {
 
+    private final Board board;
+
     private final Coordinate start;
     private final Coordinate end;
 
-    private boolean castling;
+    private MoveType moveType;
 
-    public Move(Coordinate start, Coordinate end) {
+    public Move(Board board, Coordinate start, Coordinate end) {
+        this.board = board;
         this.start = start;
         this.end = end;
+        setMoveType(board, board.getPiece(start).getColor());
     }
 
     public Move(Board board, Piece piece, Coordinate end) {
+        this.board = board;
         this.start = board.findPiece(piece);
         this.end = end;
+        setMoveType(board, piece.getColor());
     }
 
     public int getStartX() {
@@ -79,16 +86,37 @@ public class Move {
     }
 
     public Move invertMove() {
-        return new Move(end, start);
+        return new Move(board, end, start);
     }
 
-    public boolean isCastling(Board board, Color color) {
+    private void setMoveType(Board board, Color color) {
+        moveType = MoveType.REGULAR;
+        setPawnJumpIfTrue(board);
+        setCastlingIfTrue(board, color);
+        setEnpassantIfTrue(board, color);
+        setPromotionIfTrue(board, color);
+    }
+
+    private void setPawnJumpIfTrue(Board board) {
+        Piece pawn = board.getPiece(this.getStart());
+        if (pawn == null || !(pawn instanceof Pawn)) {
+            return;
+        }
+
+        int xDifference = Math.abs(getStartX() - getEndX());
+        int yDifference = Math.abs(getStartY() - getEndY());
+        if (yDifference == 2 && xDifference == 0) {
+            moveType = MoveType.PAWNJUMP;
+        }
+    }
+
+    private void setCastlingIfTrue(Board board, Color color) {
         Piece king = board.getPiece(this.getStart());
         if (king == null || !(king instanceof King)) {
-            return false;
+            return;
         }
         if (king.hasMoved()) {
-            return false;
+            return;
         }
         if (color == Color.WHITE) {
             if (this.getStart().equals(new Coordinate(4, 7))) {
@@ -96,14 +124,16 @@ public class Move {
                 if (this.getEnd().equals(new Coordinate(2, 7))) {
                     Piece rook = board.getPiece(new Coordinate(0, 7));
                     if (rook != null && rook instanceof Rook && !rook.hasMoved()) {
-                        setCastling(true);
+                        moveType = MoveType.CASTLING;
+                        return;
                     }
                 }
 
                 if (this.getEnd().equals(new Coordinate(6, 7))) {
                     Piece rook = board.getPiece(new Coordinate(0, 7));
                     if (rook != null && rook instanceof Rook && !rook.hasMoved()) {
-                        setCastling(true);
+                        moveType = MoveType.CASTLING;
+                        return;
                     }
                 }
 
@@ -115,49 +145,102 @@ public class Move {
                 if (this.getEnd().equals(new Coordinate(2, 0))) {
                     Piece rook = board.getPiece(new Coordinate(0, 0));
                     if (rook != null && rook instanceof Rook && !rook.hasMoved()) {
-                        setCastling(true);
+                        moveType = MoveType.CASTLING;
+                        return;
                     }
                 }
 
                 if (this.getEnd().equals(new Coordinate(6, 0))) {
                     Piece rook = board.getPiece(new Coordinate(7, 0));
                     if (rook != null && rook instanceof Rook && !rook.hasMoved()) {
-                        setCastling(true);
+                        moveType = MoveType.CASTLING;
+                        return;
                     }
                 }
 
             }
         }
-        return castling;
+    }
+
+    private void setEnpassantIfTrue(Board board, Color color) {
+        Piece pawn = board.getPiece(this.getStart());
+        if (pawn == null || !(pawn instanceof Pawn)) {
+            return;
+        }
+        if (!board.getLastMove().isPawnJump()) {
+            return;
+        }
+        if (getEndX() != board.getLastMove().getEndX()) {
+            return;
+        }
+
+        if (color == Color.WHITE) {
+            if (getEndY() + 1 == board.getLastMove().getEndY()) {
+                moveType = MoveType.ENPASSANT;
+                return;
+            }
+        } else {
+            if (getEndY() - 1 == board.getLastMove().getEndY()) {
+                moveType = MoveType.ENPASSANT;
+                return;
+            }
+        }
+    }
+
+    private void setPromotionIfTrue(Board board, Color color) {
+        Piece pawn = board.getPiece(this.getStart());
+        if (pawn == null || !(pawn instanceof Pawn)) {
+            return;
+        }
+        if (color == Color.WHITE) {
+            if (getEndY() == 0) {
+                moveType = MoveType.PROMOTION;
+                return;
+            }
+        } else {
+            if (getEndY() == Board.BOARD_SIZE-1) {
+                moveType = MoveType.PROMOTION;
+                return;
+            }
+        }
+
     }
 
     public Move getCastlingRookMove(Color color) {
         Move moveRook = null;
         //white small castling
         if (color == Color.WHITE && this.getEnd().equals(new Coordinate(6, 7))) {
-            moveRook = new Move(new Coordinate(7, 7), new Coordinate(5, 7));
+            moveRook = new Move(board, new Coordinate(7, 7), new Coordinate(5, 7));
         }
         //white big castling
         if (color == Color.WHITE && this.getEnd().equals(new Coordinate(2, 7))) {
-            moveRook = new Move(new Coordinate(0, 7), new Coordinate(3, 7));
+            moveRook = new Move(board, new Coordinate(0, 7), new Coordinate(3, 7));
         }
         //black small castling
         if (color == Color.BLACK && this.getEnd().equals(new Coordinate(6, 0))) {
-            moveRook = new Move(new Coordinate(7, 0), new Coordinate(5, 0));
+            moveRook = new Move(board, new Coordinate(7, 0), new Coordinate(5, 0));
         }
         //black big castling
         if (color == Color.BLACK && this.getEnd().equals(new Coordinate(2, 0))) {
-            moveRook = new Move(new Coordinate(0, 0), new Coordinate(3, 0));
+            moveRook = new Move(board, new Coordinate(0, 0), new Coordinate(3, 0));
         }
         return moveRook;
     }
 
-    public void setCastling(boolean castling) {
-        this.castling = castling;
+    public boolean isPawnJump() {
+        return moveType == MoveType.PAWNJUMP;
     }
 
     public boolean isCastling() {
-        return castling;
+        return moveType == MoveType.CASTLING;
+    }
+
+    public boolean isEnPassant() {
+        return moveType == MoveType.ENPASSANT;
+    }
+
+    public boolean isPromotion() {
+        return moveType == MoveType.PROMOTION;
     }
 
     @Override
@@ -188,10 +271,5 @@ public class Move {
         }
         return true;
     }
-
-    
-
-       
-    
 
 }

@@ -22,7 +22,9 @@ import java.util.List;
 public class Board {
 
     public static final int BOARD_SIZE = 8;
+    
     private Spot[][] spots;
+    private Move lastMove;
 
     public Board() {
         spots = new Spot[BOARD_SIZE][BOARD_SIZE];
@@ -35,13 +37,22 @@ public class Board {
     
     public void moveTo(Move move) {
         Piece piece = getPiece(move.getStart());
-        if(move.isCastling(this, piece.getColor())){
+        if(move.isCastling()){
             castle(piece, move);
+            return;
+        }
+        if(move.isEnPassant()){
+            enPassant(piece, move);
+            return;
+        }
+        if(move.isPromotion()){
+            promotion(piece, move);
             return;
         }
         removePiece(move.getStart());
         addPiece(piece, move.getEnd());
         piece.setMoved(true);
+        lastMove = move;
     }
 
     public void moveTo(Piece piece, Coordinate coord) {
@@ -57,6 +68,21 @@ public class Board {
         addPiece(piece, move.getEnd());
         addPiece(rook, rookMove.getEnd());
         piece.setMoved(true);
+    }
+    
+    private void enPassant(Piece piece, Move move){
+        removePiece(move.getStart());
+        addPiece(piece, move.getEnd());
+        if(piece.getColor() == Color.WHITE){
+            removePiece(new Coordinate(move.getEndX(), move.getEndY()+1));
+        }else{
+            removePiece(new Coordinate(move.getEndX(), move.getEndY()-1));
+        }
+    }
+    
+    private void promotion(Piece piece, Move move){
+        removePiece(move.getStart());
+        addPiece(new Queen(piece.getColor()), move.getEnd());
     }
 
     private void makeImaginaryMove(Move move) {
@@ -201,8 +227,8 @@ public class Board {
     public boolean IsCastlingAvailable(Move move, Color color) {
         //white small castling
         if(color == Color.WHITE && move.getEnd().equals(new Coordinate(6, 7))){
-            Move move1 = new Move(move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
-            Move move2 = new Move(move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
+            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
+            Move move2 = new Move(this, move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
             if(!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied()){
                 if(!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)){
                     return true;
@@ -211,9 +237,9 @@ public class Board {
         }
         //white big castling
         if(color == Color.WHITE && move.getEnd().equals(new Coordinate(2, 7))){
-            Move move1 = new Move(move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
-            Move move2 = new Move(move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
-            Move move3 = new Move(move.getStart(), new Coordinate(move.getEndX()+1, move.getEndY()));
+            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
+            Move move2 = new Move(this, move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
+            Move move3 = new Move(this, move.getStart(), new Coordinate(move.getEndX()+1, move.getEndY()));
             if(!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied() && !getSpot(move3.getEnd()).isOccupied()){
                 if(!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)){
                     return true;
@@ -222,8 +248,8 @@ public class Board {
         }
         //black small castling
         if(color == Color.BLACK && move.getEnd().equals(new Coordinate(6, 0))){
-            Move move1 = new Move(move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
-            Move move2 = new Move(move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
+            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
+            Move move2 = new Move(this, move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
             if(!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied()){
                 if(!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)){
                     return true;
@@ -232,9 +258,9 @@ public class Board {
         }
         //black big castling
         if(color == Color.BLACK && move.getEnd().equals(new Coordinate(2, 0))){
-            Move move1 = new Move(move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
-            Move move2 = new Move(move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
-            Move move3 = new Move(move.getStart(), new Coordinate(move.getEndX()+1, move.getEndY()));
+            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
+            Move move2 = new Move(this, move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
+            Move move3 = new Move(this, move.getStart(), new Coordinate(move.getEndX()+1, move.getEndY()));
             if(!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied() && !getSpot(move3.getEnd()).isOccupied()){
                 if(!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)){
                     return true;
@@ -246,6 +272,13 @@ public class Board {
     
     public Spot getSpot(Coordinate coord){
         return spots[coord.getY()][coord.getX()];
+    }
+
+    public Move getLastMove() {
+        if(lastMove == null){
+            return new Move(this, new Coordinate(0, 0), new Coordinate(0,0));
+        }
+        return lastMove;
     }
 
     private void setupPieces() {

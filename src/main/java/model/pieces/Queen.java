@@ -56,7 +56,7 @@ public class Queen extends Piece{
         
         //left up diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() - i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() - i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -66,7 +66,7 @@ public class Queen extends Piece{
         
         //left down diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() + i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() + i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -76,7 +76,7 @@ public class Queen extends Piece{
         
         //right up diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -86,7 +86,7 @@ public class Queen extends Piece{
 
         //right down diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -95,7 +95,7 @@ public class Queen extends Piece{
         }
         //left
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY()));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY()));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -105,7 +105,7 @@ public class Queen extends Piece{
 
         //right
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY()));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY()));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -115,7 +115,7 @@ public class Queen extends Piece{
 
         //up
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX(), myCoord.getY() - i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX(), myCoord.getY() - i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
@@ -125,7 +125,7 @@ public class Queen extends Piece{
 
         //down
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
-            Move move = new Move(myCoord, new Coordinate(myCoord.getX(), myCoord.getY() + i));
+            Move move = new Move(board, myCoord, new Coordinate(myCoord.getX(), myCoord.getY() + i));
             if (move.isAtBoard() && isMoveValid(board, move)) {
                 moves.add(move);
             } else {
