@@ -25,7 +25,7 @@ public class Bishop extends Piece {
     @Override
     public boolean isMoveValid(Board board, Move move) {
         return isMovementValid(move)
-                && !super.istargetPieceMine(board.getPiece(move.getEnd()))
+                && !super.istargetPieceMine(board.getPieceAt(move.getEnd()))
                 && !super.isPathBlocked(board, move);
     }
 
@@ -50,7 +50,7 @@ public class Bishop extends Piece {
     public List<Move> getAllAvailableMoves(Board board) {
         List<Move> moves = new ArrayList<>();
         Coordinate myCoord = board.findPiece(this);
-        
+
         //left up diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
             Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() - i));
@@ -60,7 +60,7 @@ public class Bishop extends Piece {
                 break;
             }
         }
-        
+
         //left down diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
             Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() + i));
@@ -70,7 +70,7 @@ public class Bishop extends Piece {
                 break;
             }
         }
-        
+
         //right up diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
             Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - i));

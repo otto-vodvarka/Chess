@@ -22,7 +22,7 @@ import java.util.List;
 public class Board {
 
     public static final int BOARD_SIZE = 8;
-    
+
     private Spot[][] spots;
     private Move lastMove;
 
@@ -34,22 +34,22 @@ public class Board {
     public Board(Spot[][] spots) {
         this.spots = spots;
     }
-    
+
     public void moveTo(Move move) {
-        Piece piece = getPiece(move.getStart());
-        if(move.isCastling()){
+        Piece piece = getPieceAt(move.getStart());
+        if (move.isCastling()) {
             castle(piece, move);
             return;
         }
-        if(move.isEnPassant()){
+        if (move.isEnPassant()) {
             enPassant(piece, move);
             return;
         }
-        if(move.isPromotion()){
+        if (move.isPromotion()) {
             promotion(piece, move);
             return;
         }
-        removePiece(move.getStart());
+        removePieceAt(move.getStart());
         addPiece(piece, move.getEnd());
         piece.setMoved(true);
         lastMove = move;
@@ -59,35 +59,35 @@ public class Board {
         Move move = new Move(this, piece, coord);
         moveTo(move);
     }
-    
-    private void castle(Piece piece, Move move){
+
+    private void castle(Piece piece, Move move) {
         Move rookMove = move.getCastlingRookMove(piece.getColor());
-        Piece rook = getPiece(rookMove.getStart());
-        removePiece(move.getStart());
-        removePiece(rookMove.getStart());
+        Piece rook = getPieceAt(rookMove.getStart());
+        removePieceAt(move.getStart());
+        removePieceAt(rookMove.getStart());
         addPiece(piece, move.getEnd());
         addPiece(rook, rookMove.getEnd());
         piece.setMoved(true);
     }
-    
-    private void enPassant(Piece piece, Move move){
-        removePiece(move.getStart());
+
+    private void enPassant(Piece piece, Move move) {
+        removePieceAt(move.getStart());
         addPiece(piece, move.getEnd());
-        if(piece.getColor() == Color.WHITE){
-            removePiece(new Coordinate(move.getEndX(), move.getEndY()+1));
-        }else{
-            removePiece(new Coordinate(move.getEndX(), move.getEndY()-1));
+        if (piece.getColor() == Color.WHITE) {
+            removePieceAt(new Coordinate(move.getEndX(), move.getEndY() + 1));
+        } else {
+            removePieceAt(new Coordinate(move.getEndX(), move.getEndY() - 1));
         }
     }
-    
-    private void promotion(Piece piece, Move move){
-        removePiece(move.getStart());
+
+    private void promotion(Piece piece, Move move) {
+        removePieceAt(move.getStart());
         addPiece(new Queen(piece.getColor()), move.getEnd());
     }
 
     private void makeImaginaryMove(Move move) {
-        Piece piece = getPiece(move.getStart());
-        removePiece(move.getStart());
+        Piece piece = getPieceAt(move.getStart());
+        removePieceAt(move.getStart());
         addPiece(piece, move.getEnd());
     }
 
@@ -106,49 +106,16 @@ public class Board {
         }
     }
 
-    public void removePiece(Coordinate coord) {
+    public void removePieceAt(Coordinate coord) {
         int x = coord.getY();
         int y = coord.getX();
         if (spots[x][y] != null) {
             spots[x][y].removePiece();
         }
     }
-
-    public Coordinate findPiece(Piece piece) {
-        Coordinate coord = null;
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                if (spots[i][j] != null && spots[i][j].getPiece() == piece) {
-                    coord = new Coordinate(j, i);
-                }
-            }
-        }
-        return coord;
-    }
-
-    public Coordinate findKing(Color color) {
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                if (spots[i][j] != null && spots[i][j].getPiece() != null
-                        && spots[i][j].getPiece().getColor() == color
-                        && spots[i][j].getPiece() instanceof King) {
-                    return new Coordinate(j, i);
-                }
-            }
-        }
-        return null;
-    }
-
-    public Piece getPiece(Coordinate coord) {
-        Spot spot = spots[coord.getY()][coord.getX()];
-        if (spot != null) {
-            return spot.getPiece();
-        }
-        return null;
-    }
-
+    
     public boolean hasPiece(Coordinate coord) {
-        if (getPiece(coord) == null) {
+        if (getPieceAt(coord) == null) {
             return false;
         }
         return true;
@@ -181,11 +148,11 @@ public class Board {
     }
 
     public boolean isInCheckAfterThisMove(Move move, Color color) {
-        if(move.isCastling()){
+        if (move.isCastling()) {
             return false;
         }
         boolean check = false;
-        Piece piece = getPiece(move.getEnd());
+        Piece piece = getPieceAt(move.getEnd());
         makeImaginaryMove(move);
         if (isInCheck(color)) {
             check = true;
@@ -195,6 +162,7 @@ public class Board {
         return check;
     }
 
+    //all moves including moves, which causes check
     public List<Move> getAllAvailableMovesByColor(Color color) {
         List<Move> moves = new ArrayList<>();
         for (Piece piece : getAllPiecesbyColor(color)) {
@@ -203,12 +171,38 @@ public class Board {
         return moves;
     }
 
+    //all moves that are available to player
     public List<Move> getAllLegalMovesByColor(Color color) {
         List<Move> moves = new ArrayList<>();
         for (Piece piece : getAllPiecesbyColor(color)) {
             moves.addAll(piece.getAllLegalMoves(this));
         }
         return moves;
+    }
+    
+    public Coordinate findPiece(Piece piece) {
+        Coordinate coord = null;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (spots[i][j] != null && spots[i][j].getPiece() == piece) {
+                    coord = new Coordinate(j, i);
+                }
+            }
+        }
+        return coord;
+    }
+
+    public Coordinate findKing(Color color) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (spots[i][j] != null && spots[i][j].getPiece() != null
+                        && spots[i][j].getPiece().getColor() == color
+                        && spots[i][j].getPiece() instanceof King) {
+                    return new Coordinate(j, i);
+                }
+            }
+        }
+        return null;
     }
 
     public List<Piece> getAllPiecesbyColor(Color color) {
@@ -223,62 +217,70 @@ public class Board {
         }
         return pieces;
     }
+    
+    public Piece getPieceAt(Coordinate coord) {
+        Spot spot = spots[coord.getY()][coord.getX()];
+        if (spot != null) {
+            return spot.getPiece();
+        }
+        return null;
+    }
 
+    public Spot getSpot(Coordinate coord) {
+        return spots[coord.getY()][coord.getX()];
+    }
+
+    public Move getLastMove() {
+        if (lastMove == null) {
+            return new Move(this, new Coordinate(0, 0), new Coordinate(0, 0));
+        }
+        return lastMove;
+    }
+    
     public boolean IsCastlingAvailable(Move move, Color color) {
         //white small castling
-        if(color == Color.WHITE && move.getEnd().equals(new Coordinate(6, 7))){
-            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
+        if (color == Color.WHITE && move.getEnd().equals(new Coordinate(6, 7))) {
+            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX() - 1, move.getEndY()));
             Move move2 = new Move(this, move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
-            if(!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied()){
-                if(!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)){
+            if (!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied()) {
+                if (!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)) {
                     return true;
                 }
-            }            
+            }
         }
         //white big castling
-        if(color == Color.WHITE && move.getEnd().equals(new Coordinate(2, 7))){
-            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
+        if (color == Color.WHITE && move.getEnd().equals(new Coordinate(2, 7))) {
+            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX() - 1, move.getEndY()));
             Move move2 = new Move(this, move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
-            Move move3 = new Move(this, move.getStart(), new Coordinate(move.getEndX()+1, move.getEndY()));
-            if(!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied() && !getSpot(move3.getEnd()).isOccupied()){
-                if(!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)){
+            Move move3 = new Move(this, move.getStart(), new Coordinate(move.getEndX() + 1, move.getEndY()));
+            if (!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied() && !getSpot(move3.getEnd()).isOccupied()) {
+                if (!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)) {
                     return true;
                 }
             }
         }
         //black small castling
-        if(color == Color.BLACK && move.getEnd().equals(new Coordinate(6, 0))){
-            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
+        if (color == Color.BLACK && move.getEnd().equals(new Coordinate(6, 0))) {
+            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX() - 1, move.getEndY()));
             Move move2 = new Move(this, move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
-            if(!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied()){
-                if(!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)){
+            if (!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied()) {
+                if (!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)) {
                     return true;
                 }
             }
         }
         //black big castling
-        if(color == Color.BLACK && move.getEnd().equals(new Coordinate(2, 0))){
-            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX()-1, move.getEndY()));
+        if (color == Color.BLACK && move.getEnd().equals(new Coordinate(2, 0))) {
+            Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX() - 1, move.getEndY()));
             Move move2 = new Move(this, move.getStart(), new Coordinate(move.getEndX(), move.getEndY()));
-            Move move3 = new Move(this, move.getStart(), new Coordinate(move.getEndX()+1, move.getEndY()));
-            if(!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied() && !getSpot(move3.getEnd()).isOccupied()){
-                if(!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)){
+            Move move3 = new Move(this, move.getStart(), new Coordinate(move.getEndX() + 1, move.getEndY()));
+            if (!getSpot(move1.getEnd()).isOccupied() && !getSpot(move2.getEnd()).isOccupied() && !getSpot(move3.getEnd()).isOccupied()) {
+                if (!isInCheckAfterThisMove(move1, color) && !isInCheckAfterThisMove(move2, color)) {
                     return true;
                 }
             }
         }
         return false;
-    }
-    
-    public Spot getSpot(Coordinate coord){
-        return spots[coord.getY()][coord.getX()];
-    }
-
-    public Move getLastMove() {
-        if(lastMove == null){
-            return new Move(this, new Coordinate(0, 0), new Coordinate(0,0));
-        }
-        return lastMove;
     }
 
     private void setupPieces() {

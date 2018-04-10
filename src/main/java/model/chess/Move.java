@@ -28,7 +28,7 @@ public class Move {
         this.board = board;
         this.start = start;
         this.end = end;
-        setMoveType(board, board.getPiece(start).getColor());
+        setMoveType(board, board.getPieceAt(start).getColor());
     }
 
     public Move(Board board, Piece piece, Coordinate end) {
@@ -98,7 +98,7 @@ public class Move {
     }
 
     private void setPawnJumpIfTrue(Board board) {
-        Piece pawn = board.getPiece(this.getStart());
+        Piece pawn = board.getPieceAt(this.getStart());
         if (pawn == null || !(pawn instanceof Pawn)) {
             return;
         }
@@ -111,7 +111,7 @@ public class Move {
     }
 
     private void setCastlingIfTrue(Board board, Color color) {
-        Piece king = board.getPiece(this.getStart());
+        Piece king = board.getPieceAt(this.getStart());
         if (king == null || !(king instanceof King)) {
             return;
         }
@@ -122,7 +122,7 @@ public class Move {
             if (this.getStart().equals(new Coordinate(4, 7))) {
 
                 if (this.getEnd().equals(new Coordinate(2, 7))) {
-                    Piece rook = board.getPiece(new Coordinate(0, 7));
+                    Piece rook = board.getPieceAt(new Coordinate(0, 7));
                     if (rook != null && rook instanceof Rook && !rook.hasMoved()) {
                         moveType = MoveType.CASTLING;
                         return;
@@ -130,7 +130,7 @@ public class Move {
                 }
 
                 if (this.getEnd().equals(new Coordinate(6, 7))) {
-                    Piece rook = board.getPiece(new Coordinate(0, 7));
+                    Piece rook = board.getPieceAt(new Coordinate(0, 7));
                     if (rook != null && rook instanceof Rook && !rook.hasMoved()) {
                         moveType = MoveType.CASTLING;
                         return;
@@ -143,7 +143,7 @@ public class Move {
             if (this.getStart().equals(new Coordinate(4, 0))) {
 
                 if (this.getEnd().equals(new Coordinate(2, 0))) {
-                    Piece rook = board.getPiece(new Coordinate(0, 0));
+                    Piece rook = board.getPieceAt(new Coordinate(0, 0));
                     if (rook != null && rook instanceof Rook && !rook.hasMoved()) {
                         moveType = MoveType.CASTLING;
                         return;
@@ -151,7 +151,7 @@ public class Move {
                 }
 
                 if (this.getEnd().equals(new Coordinate(6, 0))) {
-                    Piece rook = board.getPiece(new Coordinate(7, 0));
+                    Piece rook = board.getPieceAt(new Coordinate(7, 0));
                     if (rook != null && rook instanceof Rook && !rook.hasMoved()) {
                         moveType = MoveType.CASTLING;
                         return;
@@ -163,7 +163,7 @@ public class Move {
     }
 
     private void setEnpassantIfTrue(Board board, Color color) {
-        Piece pawn = board.getPiece(this.getStart());
+        Piece pawn = board.getPieceAt(this.getStart());
         if (pawn == null || !(pawn instanceof Pawn)) {
             return;
         }
@@ -188,7 +188,7 @@ public class Move {
     }
 
     private void setPromotionIfTrue(Board board, Color color) {
-        Piece pawn = board.getPiece(this.getStart());
+        Piece pawn = board.getPieceAt(this.getStart());
         if (pawn == null || !(pawn instanceof Pawn)) {
             return;
         }

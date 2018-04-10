@@ -9,7 +9,6 @@ import model.chess.Board;
 import model.chess.Color;
 import model.chess.Coordinate;
 import model.chess.Game;
-import model.chess.HumanPlayer;
 import model.chess.Move;
 import model.chess.Player;
 import model.pieces.Piece;
@@ -50,7 +49,7 @@ public class ChessFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
     }
 
     public void setupGame(Game game) {
@@ -80,7 +79,7 @@ public class ChessFXMLController implements Initializable {
         for (int i = 0; i < Board.BOARD_SIZE; i++) {
             for (int j = 0; j < Board.BOARD_SIZE; j++) {
                 Pane pane = setupPane(i, j);
-                Piece piece = game.getBoard().getPiece(new Coordinate(i, j));
+                Piece piece = game.getBoard().getPieceAt(new Coordinate(i, j));
                 if (piece != null) {
                     Label pieceLabel = getPieceLabel(piece);
                     pane.getChildren().add(pieceLabel);
@@ -120,7 +119,7 @@ public class ChessFXMLController implements Initializable {
                     //spot contains piece
                     if (currentPiece == null) {
                         //no piece is selected
-                        if (hasRightColor(pane)) {
+                        if (hasCorrectColor(pane)) {
                             //piece has the right color
                             setCurrentPiece(pane);
                         }
@@ -136,8 +135,8 @@ public class ChessFXMLController implements Initializable {
                                 //vyhození
                                 game.getBoard().moveTo(currentPiece, spotCoord);;
                                 nullSelectedPiece();
-                                checkCheck(currentPlayer);
-                                checkCheckmate(currentPlayer);
+                                isInCheck(currentPlayer);
+                                isCheckmated(currentPlayer);
                                 switchPlayers();
                             }
 
@@ -151,8 +150,8 @@ public class ChessFXMLController implements Initializable {
                             //validace tahu
                             game.getBoard().moveTo(currentPiece, new Coordinate(x, y));
                             nullSelectedPiece();
-                            checkCheck(currentPlayer);
-                            checkCheckmate(currentPlayer);
+                            isInCheck(currentPlayer);
+                            isCheckmated(currentPlayer);
                             switchPlayers();
                         }
                     }
@@ -163,7 +162,15 @@ public class ChessFXMLController implements Initializable {
         });
     }
 
-    private void checkCheck(Player player) {
+    private PieceView getPieceLabel(Piece piece) {
+        PieceView view = new PieceView(piece);
+        view.setFont(Font.loadFont(ChessFXMLController.class.getResource("/fonts/CASEFONT.TTF").toExternalForm(), 70));
+        StackPane.setAlignment(view, Pos.CENTER);
+
+        return view;
+    }
+
+    private void isInCheck(Player player) {
         if (game.getBoard().isInCheck(player.getColor().opposite())) {
             waitingPlayer.setIsInCheck(true);
             System.out.println("Player is in check");
@@ -172,7 +179,7 @@ public class ChessFXMLController implements Initializable {
         }
     }
 
-    private void checkCheckmate(Player player) {
+    private void isCheckmated(Player player) {
         if (waitingPlayer.isInCheck()) {
             if (game.getBoard().isCheckMate(player.getColor().opposite())) {
                 System.out.println("CHECKMATE!!!");
@@ -201,7 +208,7 @@ public class ChessFXMLController implements Initializable {
         return false;
     }
 
-    private boolean hasRightColor(Pane pane) {
+    private boolean hasCorrectColor(Pane pane) {
         return currentPlayer.getColor() == ((PieceView) pane.getChildren().get(0)).getPiece().getColor();
     }
 
@@ -211,14 +218,6 @@ public class ChessFXMLController implements Initializable {
 
     private boolean containsPiece(Pane pane) {
         return !pane.getChildren().isEmpty();
-    }
-
-    private PieceView getPieceLabel(Piece piece) {
-        PieceView view = new PieceView(piece);
-        view.setFont(Font.loadFont(ChessFXMLController.class.getResource("/fonts/CASEFONT.TTF").toExternalForm(), 70));
-        StackPane.setAlignment(view, Pos.CENTER);
-
-        return view;
     }
 
 }

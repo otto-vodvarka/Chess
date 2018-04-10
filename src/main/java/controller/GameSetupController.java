@@ -5,7 +5,6 @@
  */
 package controller;
 
-import java.io.File;
 import model.chess.Board;
 import model.chess.Color;
 import model.chess.Game;
@@ -52,15 +51,18 @@ public class GameSetupController implements Initializable {
             Stage stage = new Stage();
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/chessFXML.fxml"));
-            
+
             Parent root = loader.load();
             ChessFXMLController controller = loader.getController();
             controller.setupGame(createGame());
+
             Scene scene = new Scene(root);
             scene.getStylesheets().add("/styles/chess.css");
             stage.setScene(scene);
+
             stage.show();
             ((Stage) newGameButton.getScene().getWindow()).close();
+
         } catch (IOException ex) {
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }

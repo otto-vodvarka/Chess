@@ -25,7 +25,7 @@ public class Rook extends Piece {
     @Override
     public boolean isMoveValid(Board board, Move move) {
         return isMovementValid(move)
-                && !super.istargetPieceMine(board.getPiece(move.getEnd()))
+                && !super.istargetPieceMine(board.getPieceAt(move.getEnd()))
                 && !super.isPathBlocked(board, move);
     }
 

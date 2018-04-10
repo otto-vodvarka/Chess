@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author ottovodvarka
  */
-public class Queen extends Piece{
+public class Queen extends Piece {
 
     public Queen(Color color) {
         super(color);
@@ -25,25 +25,25 @@ public class Queen extends Piece{
     @Override
     public boolean isMoveValid(Board board, Move move) {
         return isMovementValid(move)
-                && !super.istargetPieceMine(board.getPiece(move.getEnd()))
+                && !super.istargetPieceMine(board.getPieceAt(move.getEnd()))
                 && !super.isPathBlocked(board, move);
     }
-    
+
     private boolean isMovementValid(Move move) {
         int xDifference = Math.abs(move.getStartX() - move.getEndX());
         int yDifference = Math.abs(move.getStartY() - move.getEndY());
-        if(xDifference == yDifference){
+        if (xDifference == yDifference) {
             return true;
         }
-        if(xDifference * yDifference == 0){
+        if (xDifference * yDifference == 0) {
             return true;
         }
         return false;
     }
-    
+
     @Override
     public String getTextRepresantation() {
-        if(color == Color.WHITE){
+        if (color == Color.WHITE) {
             return "q";
         }
         return "w";
@@ -53,7 +53,7 @@ public class Queen extends Piece{
     public List<Move> getAllAvailableMoves(Board board) {
         List<Move> moves = new ArrayList<>();
         Coordinate myCoord = board.findPiece(this);
-        
+
         //left up diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
             Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() - i));
@@ -63,7 +63,7 @@ public class Queen extends Piece{
                 break;
             }
         }
-        
+
         //left down diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
             Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() - i, myCoord.getY() + i));
@@ -73,7 +73,7 @@ public class Queen extends Piece{
                 break;
             }
         }
-        
+
         //right up diagonal
         for (int i = 1; i < Board.BOARD_SIZE; i++) {
             Move move = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() - i));
@@ -134,5 +134,5 @@ public class Queen extends Piece{
         }
         return moves;
     }
-    
+
 }

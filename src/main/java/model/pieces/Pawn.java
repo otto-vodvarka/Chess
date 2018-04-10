@@ -25,7 +25,7 @@ public class Pawn extends Piece {
     @Override
     public boolean isMoveValid(Board board, Move move) {
         return isMovementValid(board, move)
-                && !super.istargetPieceMine(board.getPiece(move.getEnd()))
+                && !super.istargetPieceMine(board.getPieceAt(move.getEnd()))
                 && !super.isPathBlocked(board, move);
     }
 
@@ -44,8 +44,10 @@ public class Pawn extends Piece {
                 return true;
             }
         } else {
-            if (move.isEnPassant()) return true;
-            
+            if (move.isEnPassant()) {
+                return true;
+            }
+
             if (board.isOnRow(this, 1)) {
                 if ((yDifference == -1 || yDifference == -2) && xDifference == 0) {
                     return true;
@@ -67,8 +69,10 @@ public class Pawn extends Piece {
                 return true;
             }
         } else {
-            if (move.isEnPassant()) return true;
-            
+            if (move.isEnPassant()) {
+                return true;
+            }
+
             if (board.isOnRow(this, 6)) {
                 if ((yDifference == 1 || yDifference == 2) && xDifference == 0) {
                     return true;
@@ -94,7 +98,7 @@ public class Pawn extends Piece {
     public List<Move> getAllAvailableMoves(Board board) {
         List<Move> moves = new ArrayList<>();
         Coordinate myCoord = board.findPiece(this);
-        
+
         //one block forward
         for (int i = -1; i <= 1; i++) {
             //white
@@ -102,14 +106,14 @@ public class Pawn extends Piece {
             if (moveWhite.isAtBoard() && isMoveValid(board, moveWhite)) {
                 moves.add(moveWhite);
             }
-            
+
             //black
             Move moveBlack = new Move(board, myCoord, new Coordinate(myCoord.getX() + i, myCoord.getY() + 1));
             if (moveBlack.isAtBoard() && isMoveValid(board, moveBlack)) {
                 moves.add(moveBlack);
             }
         }
-        
+
         //two steps forward
         //white
         Move moveWhite = new Move(board, myCoord, new Coordinate(myCoord.getX(), myCoord.getY() - 2));

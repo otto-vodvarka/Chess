@@ -6,6 +6,8 @@ package controller;
  * and open the template in the editor.
  */
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,26 +22,22 @@ public class Chess extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        
         try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/gameSetup.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/gameSetup.fxml"));
+            primaryStage.setScene(new Scene(root));
             primaryStage.show();
-        } 
-        catch (IOException ex) {
-            ex.printStackTrace();
+
+        } catch (IOException ex) {
+            Logger.getLogger(Chess.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {    
+    public static void main(String[] args) {
         launch(args);
     }
 

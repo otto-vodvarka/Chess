@@ -24,13 +24,13 @@ public class King extends Piece {
 
     @Override
     public boolean isMoveValid(Board board, Move move) {
-        if(isMovementValid(move)){
-            if(!super.istargetPieceMine(board.getPiece(move.getEnd()))){
+        if (isMovementValid(move)) {
+            if (!super.istargetPieceMine(board.getPieceAt(move.getEnd()))) {
                 return true;
             }
-        }else{
-            if(board.getSpot(move.getEnd()) != null && !board.getSpot(move.getEnd()).isOccupied()){
-                if(move.isCastling()){
+        } else {
+            if (board.getSpot(move.getEnd()) != null && !board.getSpot(move.getEnd()).isOccupied()) {
+                if (move.isCastling()) {
                     if (board.IsCastlingAvailable(move, color)) {
                         return true;
                     }
