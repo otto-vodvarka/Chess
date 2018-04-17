@@ -24,7 +24,7 @@ public class Chess extends Application {
     public void start(Stage primaryStage) {
         try {
 
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/gameSetup.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/start.fxml"));
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
 

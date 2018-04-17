@@ -43,7 +43,5 @@ public abstract class Player {
     public boolean isInCheck() {
         return inCheck;
     }
-    
-    
-    
+  
 }

@@ -46,6 +46,10 @@ public class ChessFXMLController implements Initializable {
 
     @FXML
     private GridPane board;
+    @FXML
+    private Label playerWhiteLabel;
+    @FXML
+    private Label playerBlackLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -60,9 +64,13 @@ public class ChessFXMLController implements Initializable {
 
     private void setupPlayers() {
         if (game.getPlayer1().getColor() == Color.WHITE) {
+            playerWhiteLabel.setText(game.getPlayer1().getName());
+            playerBlackLabel.setText(game.getPlayer2().getName());
             currentPlayer = game.getPlayer1();
             waitingPlayer = game.getPlayer2();
         } else {
+            playerWhiteLabel.setText(game.getPlayer2().getName());
+            playerBlackLabel.setText(game.getPlayer1().getName());
             waitingPlayer = game.getPlayer1();
             currentPlayer = game.getPlayer2();
         }
@@ -133,7 +141,7 @@ public class ChessFXMLController implements Initializable {
                             if (availableMoves.contains(new Move(game.getBoard(), currentPosition, spotCoord))) {
                                 //validace jestli můžu figurku vyhodit
                                 //vyhození
-                                game.getBoard().moveTo(currentPiece, spotCoord);;
+                                game.getBoard().moveTo(currentPiece, spotCoord);
                                 nullSelectedPiece();
                                 isInCheck(currentPlayer);
                                 isCheckmated(currentPlayer);

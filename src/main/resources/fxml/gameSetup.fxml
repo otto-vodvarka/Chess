@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GameSetupController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GameSetupController">
    <children>
-      <Button fx:id="newGameButton" layoutX="453.0" layoutY="337.0" mnemonicParsing="false" onMouseClicked="#startNewGame" text="Start new game" />
+      <Button fx:id="newGameButton" layoutX="259.0" layoutY="295.0" mnemonicParsing="false" onMouseClicked="#startNewGame" text="Start Game" />
+      <Label layoutX="217.0" layoutY="53.0" text="CHESS">
+         <font>
+            <Font name="Arial" size="48.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="player1ChoiceBox" layoutX="100.0" layoutY="154.0" prefHeight="27.0" prefWidth="113.0" />
+      <TextField fx:id="player1EditText" layoutX="240.0" layoutY="155.0" prefHeight="27.0" prefWidth="139.0" promptText="Player 1" />
+      <Label fx:id="player1ColorLabel" layoutX="405.0" layoutY="155.0" text="R" />
+      <Label fx:id="player2ColorLabel" layoutX="405.0" layoutY="203.0" text="T" />
+      <TextField fx:id="player2EditText" layoutX="240.0" layoutY="203.0" prefHeight="27.0" prefWidth="139.0" promptText="Player 2" />
+      <ChoiceBox fx:id="player2ChoiceBox" layoutX="100.0" layoutY="204.0" prefHeight="27.0" prefWidth="113.0" />
+      <ImageView fx:id="arrowImageView" fitHeight="13.0" fitWidth="28.0" layoutX="430.0" layoutY="188.0" onMouseClicked="#switchColors" pickOnBounds="true" preserveRatio="true" style="-fx-rotate: 90;">
+         <image>
+            <Image url="@../images/arrow.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
 <?import java.lang.*?>
-<?import java.net.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
@@ -11,36 +9,26 @@
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: white;" stylesheets="@../styles/chess.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ChessFXMLController">
    <children>
       <GridPane fx:id="board" layoutX="30.0" layoutY="21.0" styleClass="board" stylesheets="@../styles/chess.css">
-        <columnConstraints>
+         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
-        </columnConstraints>
-        <rowConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
+         </columnConstraints>
+         <rowConstraints>
             <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="80.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="266.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="29.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="31.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="266.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="29.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="31.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="31.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="31.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="31.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+            <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="31.0" vgrow="SOMETIMES" />
+         </rowConstraints>
       </GridPane>
-      <Label fx:id="playerWhiteLabel" layoutX="710.0" layoutY="604.0" text="Player white">
-         <font>
-            <Font name="Arial" size="39.0" />
-         </font>
-      </Label>
-      <Label fx:id="playerBlackLabel" layoutX="710.0" layoutY="25.0" text="Player black">
-         <font>
-            <Font name="Arial" size="39.0" />
-         </font>
-      </Label>
    </children>
 </AnchorPane>

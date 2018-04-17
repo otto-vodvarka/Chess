@@ -15,14 +15,24 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Font;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import model.chess.ComputerPlayer;
 
 /**
  * FXML Controller class
@@ -33,6 +43,20 @@ public class GameSetupController implements Initializable {
 
     @FXML
     private Button newGameButton;
+    @FXML
+    private ChoiceBox<String> player1ChoiceBox;
+    @FXML
+    private TextField player1EditText;
+    @FXML
+    private TextField player2EditText;
+    @FXML
+    private Label player1ColorLabel;
+    @FXML
+    private Label player2ColorLabel;
+    @FXML
+    private ChoiceBox<String> player2ChoiceBox;
+    @FXML
+    private ImageView arrowImageView;
 
     /**
      * Initializes the controller class.
@@ -42,11 +66,25 @@ public class GameSetupController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        player1ChoiceBox.setItems(FXCollections.observableArrayList("Human Player", "Computer"));
+        player1ChoiceBox.getSelectionModel().selectFirst();
 
+        player2ChoiceBox.setItems(FXCollections.observableArrayList("Human Player", "Computer"));
+        player2ChoiceBox.getSelectionModel().selectFirst();
+
+        player1ColorLabel.setFont(Font.loadFont(ChessFXMLController.class.getResource("/fonts/CASEFONT.TTF").toExternalForm(), 30));
+        player1ColorLabel.setText("r");
+
+        player2ColorLabel.setFont(Font.loadFont(ChessFXMLController.class.getResource("/fonts/CASEFONT.TTF").toExternalForm(), 30));
+        player2ColorLabel.setText("t");
     }
 
     @FXML
     private void startNewGame(MouseEvent event) {
+        if (!isDataCorrect()) {
+            return;
+        }
+
         try {
             Stage stage = new Stage();
             FXMLLoader loader = new FXMLLoader();
@@ -57,7 +95,6 @@ public class GameSetupController implements Initializable {
             controller.setupGame(createGame());
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add("/styles/chess.css");
             stage.setScene(scene);
 
             stage.show();
@@ -69,9 +106,73 @@ public class GameSetupController implements Initializable {
     }
 
     private Game createGame() {
-        Player player1 = new HumanPlayer("Otto", Color.WHITE);
-        Player player2 = new HumanPlayer("Tomáš", Color.BLACK);
-        return new Game(new Board(), player1, player2);
+        Player playerWhite;
+        Player playerBlack;
+
+        if (player1ColorLabel.getText().equals("r")) {
+            if (player1ChoiceBox.getValue().equals("Human Player")) {
+                playerWhite = new HumanPlayer(player1EditText.getText(), Color.WHITE);
+            } else {
+                playerWhite = new ComputerPlayer(player1EditText.getText(), Color.WHITE);
+            }
+            if (player2ChoiceBox.getValue().equals("Human Player")) {
+                playerBlack = new HumanPlayer(player2EditText.getText(), Color.BLACK);
+            } else {
+                playerBlack = new ComputerPlayer(player2EditText.getText(), Color.BLACK);
+            }
+        } else {
+            if (player1ChoiceBox.getValue().equals("Human Player")) {
+                playerWhite = new HumanPlayer(player1EditText.getText(), Color.BLACK);
+            } else {
+                playerWhite = new ComputerPlayer(player1EditText.getText(), Color.BLACK);
+            }
+            if (player2ChoiceBox.getValue().equals("Human Player")) {
+                playerBlack = new HumanPlayer(player2EditText.getText(), Color.WHITE);
+            } else {
+                playerBlack = new ComputerPlayer(player2EditText.getText(), Color.WHITE);
+            }
+        }
+
+        return new Game(new Board(), playerWhite, playerBlack);
+    }
+
+    private boolean isDataCorrect() {
+        if (player1ChoiceBox.getValue().equals("Computer") && player2ChoiceBox.getValue().equals("Computer")) {
+            showInfoDialoag("At least one player has to be human");
+            return false;
+        }
+        
+        if (player1EditText.getText().isEmpty() || player2EditText.getText().isEmpty()){
+            showInfoDialoag("Every player needs to have a name");
+            return false;
+        }
+        
+        if (player1EditText.getText().length() > 15 || player2EditText.getText().length() > 15){
+            showInfoDialoag("Maximal length of name is 15 characters");
+            return false;
+        }
+        
+        return true;
+    }
+
+    @FXML
+    private void switchColors(MouseEvent event) {
+        if (player1ColorLabel.getText().equals("r")) {
+            player1ColorLabel.setText("t");
+            player2ColorLabel.setText("r");
+        } else {
+            player1ColorLabel.setText("r");
+            player2ColorLabel.setText("t");
+        }
+    }
+
+    private void showInfoDialoag(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Incorrect data");
+        alert.setContentText(message);
+
+        alert.showAndWait();
     }
 
 }
