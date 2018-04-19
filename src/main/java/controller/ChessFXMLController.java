@@ -15,34 +15,31 @@ import model.pieces.Piece;
 import view.PieceView;
 import java.net.URL;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import model.pieces.King;
 
 /**
  * FXML Controller class
  *
  * @author ottovodvarka
  */
-public class ChessFXMLController implements Initializable {
+public class ChessFXMLController implements Initializable, Observer {
 
     private Game game;
-    private Piece currentPiece;
-    private Coordinate currentPosition;
-    private List<Move> availableMoves;
-
-    //temporary
-    private Player currentPlayer;
-    private Player waitingPlayer;
-    //temporary
 
     @FXML
     private GridPane board;
@@ -58,7 +55,9 @@ public class ChessFXMLController implements Initializable {
 
     public void setupGame(Game game) {
         this.game = game;
+        game.addObserver(this);
         setupPlayers();
+        game.startGame();
         draw();
     }
 
@@ -66,23 +65,13 @@ public class ChessFXMLController implements Initializable {
         if (game.getPlayer1().getColor() == Color.WHITE) {
             playerWhiteLabel.setText(game.getPlayer1().getName());
             playerBlackLabel.setText(game.getPlayer2().getName());
-            currentPlayer = game.getPlayer1();
-            waitingPlayer = game.getPlayer2();
         } else {
             playerWhiteLabel.setText(game.getPlayer2().getName());
             playerBlackLabel.setText(game.getPlayer1().getName());
-            waitingPlayer = game.getPlayer1();
-            currentPlayer = game.getPlayer2();
         }
     }
 
-    private void switchPlayers() {
-        Player tmp = currentPlayer;
-        currentPlayer = waitingPlayer;
-        waitingPlayer = tmp;
-    }
-
-    private void draw() {
+    public void draw() {
         board.getChildren().clear();
         for (int i = 0; i < Board.BOARD_SIZE; i++) {
             for (int j = 0; j < Board.BOARD_SIZE; j++) {
@@ -105,8 +94,8 @@ public class ChessFXMLController implements Initializable {
         } else {
             pane.getStyleClass().add("darkSpot");
         }
-        if (currentPiece != null) {
-            if (currentPosition.equals(paneCoord) || isInAvailableMoves(paneCoord)) {
+        if (game.isSomePieceSelected()) {
+            if (game.getSelectedPieceCoordinates().equals(paneCoord) || isInAvailableMoves(paneCoord)) {
                 pane.getStyleClass().add("selected");
             }
         }
@@ -120,12 +109,13 @@ public class ChessFXMLController implements Initializable {
         pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                if(game.isCheckmate() || game.isStalemate()) return;
                 int x = GridPane.getColumnIndex(pane);
                 int y = GridPane.getRowIndex(pane);
                 Coordinate spotCoord = new Coordinate(x, y);
                 if (containsPiece(pane)) {
                     //spot contains piece
-                    if (currentPiece == null) {
+                    if (!game.isSomePieceSelected()) {
                         //no piece is selected
                         if (hasCorrectColor(pane)) {
                             //piece has the right color
@@ -138,29 +128,19 @@ public class ChessFXMLController implements Initializable {
                             nullSelectedPiece();
                         } else {
                             //clicked on another piece
-                            if (availableMoves.contains(new Move(game.getBoard(), currentPosition, spotCoord))) {
+                            if (game.isMoveAvailable(new Move(game.getBoard(), game.getSelectedPieceCoordinates(), spotCoord))) {
                                 //validace jestli můžu figurku vyhodit
                                 //vyhození
-                                game.getBoard().moveTo(currentPiece, spotCoord);
-                                nullSelectedPiece();
-                                isInCheck(currentPlayer);
-                                isCheckmated(currentPlayer);
-                                switchPlayers();
+                                game.getBoard().moveTo(game.getSelectedPiece(), spotCoord);
                             }
-
                         }
                     }
-
                 } else {
                     //spot doesnt contain piece
-                    if (currentPiece != null) {
-                        if (availableMoves.contains(new Move(game.getBoard(), currentPosition, spotCoord))) {
+                    if (game.isSomePieceSelected()) {
+                        if (game.isMoveAvailable(new Move(game.getBoard(), game.getSelectedPieceCoordinates(), spotCoord))) {
                             //validace tahu
-                            game.getBoard().moveTo(currentPiece, new Coordinate(x, y));
-                            nullSelectedPiece();
-                            isInCheck(currentPlayer);
-                            isCheckmated(currentPlayer);
-                            switchPlayers();
+                            game.getBoard().moveTo(game.getSelectedPiece(), new Coordinate(x, y));
                         }
                     }
                 }
@@ -173,59 +153,56 @@ public class ChessFXMLController implements Initializable {
     private PieceView getPieceLabel(Piece piece) {
         PieceView view = new PieceView(piece);
         view.setFont(Font.loadFont(ChessFXMLController.class.getResource("/fonts/CASEFONT.TTF").toExternalForm(), 70));
+        if (piece instanceof King && game.getPlayerByColor(piece.getColor()).isInCheck()) {
+            view.setTextFill(Paint.valueOf("#ff0000"));
+        }
         StackPane.setAlignment(view, Pos.CENTER);
 
         return view;
     }
 
-    private void isInCheck(Player player) {
-        if (game.getBoard().isInCheck(player.getColor().opposite())) {
-            waitingPlayer.setIsInCheck(true);
-            System.out.println("Player is in check");
-        } else {
-            waitingPlayer.setIsInCheck(false);
-        }
-    }
-
-    private void isCheckmated(Player player) {
-        if (waitingPlayer.isInCheck()) {
-            if (game.getBoard().isCheckMate(player.getColor().opposite())) {
-                System.out.println("CHECKMATE!!!");
-            }
-        }
-    }
-
     private void setCurrentPiece(Pane pane) {
-        currentPiece = ((PieceView) pane.getChildren().get(0)).getPiece();
-        currentPosition = game.getBoard().findPiece(currentPiece);
-        availableMoves = currentPiece.getAllLegalMoves(game.getBoard());
+        game.setSelectedPiece(((PieceView) pane.getChildren().get(0)).getPiece());
     }
 
     private void nullSelectedPiece() {
-        currentPiece = null;
-        currentPosition = null;
-        availableMoves = null;
+        game.unselectPiece();
     }
 
     private boolean isInAvailableMoves(Coordinate coord) {
-        for (Move move : availableMoves) {
-            if (move.getEnd().equals(coord)) {
-                return true;
-            }
-        }
-        return false;
+        return game.isMoveAvailable(new Move(game.getBoard(), game.getSelectedPieceCoordinates(), coord));
     }
 
     private boolean hasCorrectColor(Pane pane) {
-        return currentPlayer.getColor() == ((PieceView) pane.getChildren().get(0)).getPiece().getColor();
+        return game.getPlayerOnMove().getColor() == ((PieceView) pane.getChildren().get(0)).getPiece().getColor();
     }
 
     private boolean containsSelectedPiece(Pane pane) {
-        return currentPiece == ((PieceView) pane.getChildren().get(0)).getPiece();
+        return game.isSelectedPiece(((PieceView) pane.getChildren().get(0)).getPiece());
     }
 
     private boolean containsPiece(Pane pane) {
         return !pane.getChildren().isEmpty();
+    }
+
+    private void showInfoDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Game over");
+        alert.setContentText(message);
+
+        alert.showAndWait();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        draw();
+        if (game.isCheckmate()) {
+            showInfoDialog(game.getWaitingPlayer().getName() + " wins!!!");
+        }
+        if (game.isStalemate()) {
+            showInfoDialog("It is a stalemate!!!");
+        }
     }
 
 }

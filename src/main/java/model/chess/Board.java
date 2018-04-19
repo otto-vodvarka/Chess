@@ -14,12 +14,13 @@ import model.pieces.Rook;
 import model.pieces.Pawn;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  *
  * @author ottovodvarka
  */
-public class Board {
+public class Board extends Observable{
 
     public static final int BOARD_SIZE = 8;
 
@@ -53,6 +54,9 @@ public class Board {
         addPiece(piece, move.getEnd());
         piece.setMoved(true);
         lastMove = move;
+        //Send event that player made a move
+        setChanged();
+        notifyObservers();
     }
 
     public void moveTo(Piece piece, Coordinate coord) {
@@ -68,6 +72,8 @@ public class Board {
         addPiece(piece, move.getEnd());
         addPiece(rook, rookMove.getEnd());
         piece.setMoved(true);
+        setChanged();
+        notifyObservers();
     }
 
     private void enPassant(Piece piece, Move move) {
@@ -78,11 +84,15 @@ public class Board {
         } else {
             removePieceAt(new Coordinate(move.getEndX(), move.getEndY() - 1));
         }
+        setChanged();
+        notifyObservers();
     }
 
     private void promotion(Piece piece, Move move) {
         removePieceAt(move.getStart());
         addPiece(new Queen(piece.getColor()), move.getEnd());
+        setChanged();
+        notifyObservers();
     }
 
     private void makeImaginaryMove(Move move) {

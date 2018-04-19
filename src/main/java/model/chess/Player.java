@@ -5,11 +5,13 @@
  */
 package model.chess;
 
+import java.util.Observable;
+
 /**
  *
  * @author ottovodvarka
  */
-public abstract class Player {
+public abstract class Player extends Observable{
     
     protected String name;
     protected Color color;
@@ -43,5 +45,7 @@ public abstract class Player {
     public boolean isInCheck() {
         return inCheck;
     }
-  
+    
+    public abstract void play(Game game);
+    
 }
