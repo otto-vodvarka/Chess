@@ -16,10 +16,12 @@ public abstract class Player extends Observable{
     protected String name;
     protected Color color;
     protected boolean inCheck;
+    protected Duration time;
 
     public Player(String name, Color color) {
         this.name = name;
         this.color = color;
+        this.time = new Duration(Game.DURATION);
     }
 
     public String getName() {
@@ -44,6 +46,10 @@ public abstract class Player extends Observable{
 
     public boolean isInCheck() {
         return inCheck;
+    }
+
+    public Duration getTime() {
+        return time;
     }
     
     public abstract void play(Game game);

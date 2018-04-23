@@ -5,7 +5,6 @@
  */
 package model.chess;
 
-import controller.ChessFXMLController;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -16,6 +15,8 @@ import model.pieces.Piece;
  * @author ottovodvarka
  */
 public class Game extends Observable implements Observer {
+    
+    public static int DURATION = 900;
 
     private final Board board;
     private final Player player1;
@@ -29,6 +30,7 @@ public class Game extends Observable implements Observer {
     
     private boolean checkmate;
     private boolean stalemate;
+    private boolean outOfTime;
 
     public Game(Board board, Player player1, Player player2) {
         this.board = board;
@@ -96,6 +98,18 @@ public class Game extends Observable implements Observer {
         return stalemate;
     }
 
+    public void setOutOfTime(boolean outOfTime) {
+        this.outOfTime = outOfTime;
+        if (outOfTime == true) {
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public boolean isOutOfTime() {
+        return outOfTime;
+    }
+
     public Piece getSelectedPiece() {
         return selectedPiece;
     }
@@ -156,6 +170,8 @@ public class Game extends Observable implements Observer {
         unselectPiece();
         checkForSpecialSituation();
         switchPlayers();
+        setChanged();
+        notifyObservers();
         playerOnMove.play(this);
     }
 

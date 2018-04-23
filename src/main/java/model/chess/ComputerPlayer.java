@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 
 /**
  *
@@ -28,12 +29,24 @@ public class ComputerPlayer extends Player {
 
     @Override
     public void play(Game game) {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        game.getBoard().moveTo(generateMove(game.getBoard()));
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Random r = new Random();
+                    Thread.sleep(r.nextInt(2000)+1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ComputerPlayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        game.getBoard().moveTo(generateMove(game.getBoard()));
+                    }
+                });
+            }
+        });
+        t.start();
     }
 
 }

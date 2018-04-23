@@ -42,5 +42,15 @@
             <Font name="Arial" size="39.0" />
          </font>
       </Label>
+      <Label fx:id="blackTimerLabel" layoutX="710.0" layoutY="80.0" text="07:08">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Label>
+      <Label fx:id="whiteTimerLabel" layoutX="710.0" layoutY="557.0" text="07:08">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

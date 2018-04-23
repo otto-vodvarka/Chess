@@ -10,11 +10,9 @@ import model.chess.Color;
 import model.chess.Coordinate;
 import model.chess.Game;
 import model.chess.Move;
-import model.chess.Player;
 import model.pieces.Piece;
 import view.PieceView;
 import java.net.URL;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -30,6 +28,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import model.chess.ChessTimer;
+import model.chess.ComputerPlayer;
+import model.chess.Duration;
 import model.pieces.King;
 
 /**
@@ -40,6 +41,9 @@ import model.pieces.King;
 public class ChessFXMLController implements Initializable, Observer {
 
     private Game game;
+    
+    private ChessTimer whiteTimer;
+    private ChessTimer blackTimer;
 
     @FXML
     private GridPane board;
@@ -47,6 +51,10 @@ public class ChessFXMLController implements Initializable, Observer {
     private Label playerWhiteLabel;
     @FXML
     private Label playerBlackLabel;
+    @FXML
+    private Label blackTimerLabel;
+    @FXML
+    private Label whiteTimerLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -58,7 +66,23 @@ public class ChessFXMLController implements Initializable, Observer {
         game.addObserver(this);
         setupPlayers();
         game.startGame();
+        startTimers();
         draw();
+    }
+    
+    private void startTimers(){
+        whiteTimerLabel.setText(new Duration(Game.DURATION).toString());
+        whiteTimer = new ChessTimer(game, game.getPlayerByColor(Color.WHITE), whiteTimerLabel);
+        whiteTimer.run();
+        
+        blackTimerLabel.setText(new Duration(Game.DURATION).toString());
+        blackTimer = new ChessTimer(game, game.getPlayerByColor(Color.BLACK), blackTimerLabel);
+        blackTimer.run();
+    }
+    
+    private void stopTimers(){
+        whiteTimer.stop();
+        blackTimer.stop();
     }
 
     private void setupPlayers() {
@@ -109,7 +133,7 @@ public class ChessFXMLController implements Initializable, Observer {
         pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(game.isCheckmate() || game.isStalemate()) return;
+                if(game.isCheckmate() || game.isStalemate() || game.getPlayerOnMove() instanceof ComputerPlayer) return;
                 int x = GridPane.getColumnIndex(pane);
                 int y = GridPane.getRowIndex(pane);
                 Coordinate spotCoord = new Coordinate(x, y);
@@ -199,9 +223,19 @@ public class ChessFXMLController implements Initializable, Observer {
         draw();
         if (game.isCheckmate()) {
             showInfoDialog(game.getWaitingPlayer().getName() + " wins!!!");
-        }
+            stopTimers();
+             
+       }
         if (game.isStalemate()) {
             showInfoDialog("It is a stalemate!!!");
+            stopTimers();
+        }
+        if(game.isOutOfTime()){
+            if(game.getPlayer1().getTime().getSeconds() == 0){
+                showInfoDialog(game.getPlayer1() + "wins!!!");
+            }else{
+                showInfoDialog(game.getPlayer2() + "wins!!!");
+            }
         }
     }
 
