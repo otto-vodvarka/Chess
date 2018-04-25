@@ -40,6 +40,8 @@ import model.chess.ComputerPlayer;
  */
 public class GameSetupController implements Initializable {
 
+    private Board board = new Board();
+    
     @FXML
     private Button newGameButton;
     @FXML
@@ -132,7 +134,7 @@ public class GameSetupController implements Initializable {
             }
         }
 
-        return new Game(new Board(), playerWhite, playerBlack);
+        return new Game(board, playerWhite, playerBlack);
     }
 
     private boolean isDataCorrect() {
@@ -152,6 +154,10 @@ public class GameSetupController implements Initializable {
         }
         
         return true;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     @FXML

@@ -130,6 +130,18 @@ public class Board extends Observable{
         }
         return true;
     }
+    
+    public int getNumberOfPieces(){
+        int count = 0;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (spots[i][j] != null && spots[i][j].getPiece() != null) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 
     public boolean isOnRow(Piece piece, int row) {
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -209,6 +221,19 @@ public class Board extends Observable{
                         && spots[i][j].getPiece().getColor() == color
                         && spots[i][j].getPiece() instanceof King) {
                     return new Coordinate(j, i);
+                }
+            }
+        }
+        return null;
+    }
+    
+    public Piece getBishop(Color color) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (spots[i][j] != null && spots[i][j].getPiece() != null
+                        && spots[i][j].getPiece().getColor() == color
+                        && spots[i][j].getPiece() instanceof Bishop) {
+                    return spots[i][j].getPiece();
                 }
             }
         }

@@ -63,10 +63,27 @@ public class GameOptionsController implements Initializable {
 
     @FXML
     private void onLoadGameClicked(MouseEvent event) {
+        
     }
 
     @FXML
     private void onCustonSetupClicked(MouseEvent event) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/customSetup.fxml"));
+
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            stage.show();
+            ((Stage) newGameButton.getScene().getWindow()).close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }
