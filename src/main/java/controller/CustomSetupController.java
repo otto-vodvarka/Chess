@@ -278,11 +278,16 @@ public class CustomSetupController implements Initializable {
             return false;
         }
         if(board.findKing(Color.WHITE) == null || board.findKing(Color.BLACK) == null){
-            showInfoDialoag("Both king must be in the game");
+            showInfoDialoag("Both kings must be in the game");
             return false;
         }
         if(board.getNumberOfPieces() <= 2){
             showInfoDialoag("Kings are not good enough");
+            return false;
+        }
+        if(board.isStalemate(Color.WHITE) || board.isStalemate(Color.BLACK)){
+            showInfoDialoag("Stalemate!!!!");
+            return false;
         }
         return true;
     }

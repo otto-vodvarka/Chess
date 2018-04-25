@@ -179,6 +179,7 @@ public class Game extends Observable implements Observer {
         isInCheck(getWaitingPlayer());
         isInCheck(getPlayerOnMove());
         isCheckmated(getWaitingPlayer());
+        isStalemated(getWaitingPlayer());
     }
 
     private void isInCheck(Player player) {
@@ -194,6 +195,12 @@ public class Game extends Observable implements Observer {
             if (board.isCheckMate(player.getColor())) {
                 setCheckmate(true);
             }
+        }
+    }
+    
+    private void isStalemated(Player player){
+        if(board.isStalemate(player.getColor())){
+            setStalemate(true);
         }
     }
 }

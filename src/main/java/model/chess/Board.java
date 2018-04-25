@@ -161,6 +161,10 @@ public class Board extends Observable{
         }
         return false;
     }
+    
+    public boolean isStalemate(Color color){
+        return !isInCheck(color) && getAllLegalMovesByColor(color).isEmpty();
+    }
 
     public boolean isCheckMate(Color color) {
         if (isInCheck(color) && getAllLegalMovesByColor(color).isEmpty()) {
