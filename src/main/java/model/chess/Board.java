@@ -33,10 +33,20 @@ public class Board extends Observable{
     }
 
     public Board(Spot[][] spots) {
-        this.spots = spots;
+        this.spots = new Spot[BOARD_SIZE][BOARD_SIZE]; 
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if(spots[i][j] != null){
+                    this.spots[i][j] = spots[i][j];
+                }else{
+                    this.spots[i][j] = new Spot();
+                }
+            }
+        }
     }
 
     public void moveTo(Move move) {
+        if(move == null) return;
         Piece piece = getPieceAt(move.getStart());
         if (move.isCastling()) {
             castle(piece, move);
@@ -270,9 +280,6 @@ public class Board extends Observable{
     }
 
     public Move getLastMove() {
-        if (lastMove == null) {
-            return new Move(this, new Coordinate(0, 0), new Coordinate(0, 0));
-        }
         return lastMove;
     }
     

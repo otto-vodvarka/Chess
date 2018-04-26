@@ -17,5 +17,14 @@
       <Button fx:id="newGameButton" layoutX="247.0" layoutY="173.0" mnemonicParsing="false" onMouseClicked="#onNewGameClicked" prefHeight="27.0" prefWidth="106.0" text="New Game" />
       <Button fx:id="loadGameButton" layoutX="247.0" layoutY="236.0" mnemonicParsing="false" onMouseClicked="#onLoadGameClicked" prefHeight="27.0" prefWidth="106.0" text="Load Game" />
       <Button fx:id="customSetupButton" layoutX="247.0" layoutY="297.0" mnemonicParsing="false" onMouseClicked="#onCustonSetupClicked" text="Custom Setup" />
+      <MenuBar prefHeight="29.0" prefWidth="600.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Menu">
+            <items>
+              <MenuItem fx:id="mainMenu" mnemonicParsing="false" onAction="#goToMainMenu" text="Go to Main Menu" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
    </children>
 </AnchorPane>

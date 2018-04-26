@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,6 +27,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -58,6 +62,8 @@ public class GameSetupController implements Initializable {
     private ChoiceBox<String> player2ChoiceBox;
     @FXML
     private ImageView arrowImageView;
+    @FXML
+    private MenuItem mainMenu;
 
     /**
      * Initializes the controller class.
@@ -67,6 +73,7 @@ public class GameSetupController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         player1ChoiceBox.setItems(FXCollections.observableArrayList("Human Player", "Computer"));
         player1ChoiceBox.getSelectionModel().selectFirst();
 
@@ -178,6 +185,26 @@ public class GameSetupController implements Initializable {
         alert.setContentText(message);
 
         alert.showAndWait();
+    }
+    
+    @FXML
+    private void goToMainMenu(){
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/start.fxml"));
+
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            stage.show();
+            ((Stage) newGameButton.getScene().getWindow()).close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

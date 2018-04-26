@@ -167,6 +167,9 @@ public class Move {
         if (pawn == null || !(pawn instanceof Pawn)) {
             return;
         }
+        if(board.getLastMove() == null){
+            return;
+        }
         if (!board.getLastMove().isPawnJump()) {
             return;
         }

@@ -10,7 +10,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: white;" stylesheets="@../styles/chess.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ChessFXMLController">
    <children>
-      <GridPane fx:id="board" layoutX="30.0" layoutY="21.0" styleClass="board" stylesheets="@../styles/chess.css">
+      <GridPane fx:id="board" layoutX="30.0" layoutY="40.0" styleClass="board" stylesheets="@../styles/chess.css">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
@@ -37,12 +37,12 @@
             <Font name="Arial" size="39.0" />
          </font>
       </Label>
-      <Label fx:id="playerBlackLabel" layoutX="710.0" layoutY="25.0" text="Player black">
+      <Label fx:id="playerBlackLabel" layoutX="710.0" layoutY="40.0" text="Player black">
          <font>
             <Font name="Arial" size="39.0" />
          </font>
       </Label>
-      <Label fx:id="blackTimerLabel" layoutX="710.0" layoutY="80.0" text="07:08">
+      <Label fx:id="blackTimerLabel" layoutX="710.0" layoutY="90.0" text="07:08">
          <font>
             <Font size="31.0" />
          </font>
@@ -52,5 +52,14 @@
             <Font size="31.0" />
          </font>
       </Label>
+      <MenuBar prefHeight="29.0" prefWidth="1002.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="Menu">
+               <items>
+                  <MenuItem fx:id="mainMenu" mnemonicParsing="false" onAction="#goToMainMenu" text="Go to Main Menu" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
    </children>
 </AnchorPane>

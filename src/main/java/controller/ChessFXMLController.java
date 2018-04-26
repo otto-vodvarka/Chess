@@ -5,6 +5,7 @@
  */
 package controller;
 
+import java.io.IOException;
 import model.chess.Board;
 import model.chess.Color;
 import model.chess.Coordinate;
@@ -16,18 +17,27 @@ import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import model.chess.ChessTimer;
 import model.chess.ComputerPlayer;
 import model.chess.Duration;
@@ -41,7 +51,7 @@ import model.pieces.King;
 public class ChessFXMLController implements Initializable, Observer {
 
     private Game game;
-    
+
     private ChessTimer whiteTimer;
     private ChessTimer blackTimer;
 
@@ -55,10 +65,12 @@ public class ChessFXMLController implements Initializable, Observer {
     private Label blackTimerLabel;
     @FXML
     private Label whiteTimerLabel;
+    @FXML
+    private MenuItem mainMenu;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
     }
 
     public void setupGame(Game game) {
@@ -69,18 +81,18 @@ public class ChessFXMLController implements Initializable, Observer {
         startTimers();
         draw();
     }
-    
-    private void startTimers(){
+
+    private void startTimers() {
         whiteTimerLabel.setText(new Duration(Game.DURATION).toString());
         whiteTimer = new ChessTimer(game, game.getPlayerByColor(Color.WHITE), whiteTimerLabel);
         whiteTimer.run();
-        
+
         blackTimerLabel.setText(new Duration(Game.DURATION).toString());
         blackTimer = new ChessTimer(game, game.getPlayerByColor(Color.BLACK), blackTimerLabel);
         blackTimer.run();
     }
-    
-    private void stopTimers(){
+
+    private void stopTimers() {
         whiteTimer.stop();
         blackTimer.stop();
     }
@@ -133,7 +145,9 @@ public class ChessFXMLController implements Initializable, Observer {
         pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(game.isCheckmate() || game.isStalemate() || game.getPlayerOnMove() instanceof ComputerPlayer) return;
+                if (game.isCheckmate() || game.isStalemate() || game.getPlayerOnMove() instanceof ComputerPlayer) {
+                    return;
+                }
                 int x = GridPane.getColumnIndex(pane);
                 int y = GridPane.getRowIndex(pane);
                 Coordinate spotCoord = new Coordinate(x, y);
@@ -224,18 +238,38 @@ public class ChessFXMLController implements Initializable, Observer {
         if (game.isCheckmate()) {
             showInfoDialog(game.getWaitingPlayer().getName() + " wins!!!");
             stopTimers();
-             
-       }
+
+        }
         if (game.isStalemate()) {
             showInfoDialog("It is a stalemate!!!");
             stopTimers();
         }
-        if(game.isOutOfTime()){
-            if(game.getPlayer1().getTime().getSeconds() == 0){
+        if (game.isOutOfTime()) {
+            if (game.getPlayer1().getTime().getSeconds() == 0) {
                 showInfoDialog(game.getPlayer1() + "wins!!!");
-            }else{
+            } else {
                 showInfoDialog(game.getPlayer2() + "wins!!!");
             }
+        }
+    }
+
+    @FXML
+    private void goToMainMenu() {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/start.fxml"));
+
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            stage.show();
+            ((Stage) board.getScene().getWindow()).close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -23,6 +23,9 @@ public class ComputerPlayer extends Player {
 
     private Move generateMove(Board board) {
         List<Move> legalMoves = board.getAllLegalMovesByColor(this.color);
+        if(legalMoves.isEmpty()){
+            return null;
+        }
         Random random = new Random();
         return legalMoves.get(random.nextInt(legalMoves.size()));
     }

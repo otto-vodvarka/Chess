@@ -25,5 +25,14 @@
             <Image url="@../images/arrow.png" />
          </image>
       </ImageView>
+      <MenuBar prefHeight="29.0" prefWidth="600.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="Menu">
+               <items>
+                  <MenuItem fx:id="mainMenu" mnemonicParsing="false" onAction="#goToMainMenu" text="Go to Main Menu" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
    </children>
 </AnchorPane>
