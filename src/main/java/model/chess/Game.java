@@ -76,10 +76,6 @@ public class Game extends Observable implements Observer {
 
     public void setCheckmate(boolean checkmate) {
         this.checkmate = checkmate;
-        if (checkmate == true) {
-            setChanged();
-            notifyObservers();
-        }
     }
 
     public boolean isCheckmate() {
@@ -88,10 +84,6 @@ public class Game extends Observable implements Observer {
     
     public void setStalemate(boolean stalemate) {
         this.stalemate = stalemate;
-        if (stalemate == true) {
-            setChanged();
-            notifyObservers();
-        }
     }
 
     public boolean isStalemate() {
@@ -100,10 +92,6 @@ public class Game extends Observable implements Observer {
 
     public void setOutOfTime(boolean outOfTime) {
         this.outOfTime = outOfTime;
-        if (outOfTime == true) {
-            setChanged();
-            notifyObservers();
-        }
     }
 
     public boolean isOutOfTime() {
@@ -150,6 +138,10 @@ public class Game extends Observable implements Observer {
         return playerOnMove;
     }
 
+    public void setPlayerOnMove(Player playerOnMove) {
+        this.playerOnMove = playerOnMove;
+    }
+
     public Player getWaitingPlayer() {
         if (player1 == playerOnMove) {
             return player2;
@@ -175,7 +167,7 @@ public class Game extends Observable implements Observer {
         playerOnMove.play(this);
     }
 
-    private void checkForSpecialSituation() {
+    public void checkForSpecialSituation() {
         isInCheck(getWaitingPlayer());
         isInCheck(getPlayerOnMove());
         isCheckmated(getWaitingPlayer());

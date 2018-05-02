@@ -56,6 +56,7 @@ import model.pieces.Piece;
 import model.pieces.Queen;
 import model.pieces.Rook;
 import view.PieceView;
+import model.chess.AlertUtils;
 
 /**
  * FXML Controller class
@@ -273,37 +274,33 @@ public class CustomSetupController implements Initializable {
             ((Stage) boardGridPane.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     private boolean isBoardValid(){
         if(board.isCheckMate(Color.WHITE) || board.isCheckMate(Color.BLACK)){
-            showInfoDialoag("One of the players is chackmated");
+            AlertUtils.showInfoDialog("One of the players is checkmated","Incorrect data");
             return false;
         }
         if(board.findKing(Color.WHITE) == null || board.findKing(Color.BLACK) == null){
-            showInfoDialoag("Both kings must be in the game");
+            AlertUtils.showInfoDialog("Both kings must be in the game","Incorrect data");
             return false;
         }
         if(board.getNumberOfPieces() <= 2){
-            showInfoDialoag("Kings are not good enough");
+            AlertUtils.showInfoDialog("Kings are not good enough","Incorrect data");
             return false;
         }
         if(board.isStalemate(Color.WHITE) || board.isStalemate(Color.BLACK)){
-            showInfoDialoag("Stalemate!!!!");
+            AlertUtils.showInfoDialog("Stalemate!!!!","Incorrect data");
+            return false;
+        }
+        if(board.isInCheck(Color.BLACK)){
+            AlertUtils.showInfoDialog("Black player cannot be in check","Incorrect data");
             return false;
         }
         return true;
-    }
-    
-    private void showInfoDialoag(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Incorrect data");
-        alert.setContentText(message);
-
-        alert.showAndWait();
     }
     
     @FXML
@@ -322,6 +319,7 @@ public class CustomSetupController implements Initializable {
             ((Stage) boardGridPane.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

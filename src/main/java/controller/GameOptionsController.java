@@ -5,6 +5,7 @@
  */
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,12 +18,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.chess.AlertUtils;
+import model.chess.ChessLoader;
+import model.chess.Game;
 
 /**
  * FXML Controller class
@@ -45,8 +47,8 @@ public class GameOptionsController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-    }    
+
+    }
 
     @FXML
     private void onNewGameClicked(MouseEvent event) {
@@ -64,13 +66,52 @@ public class GameOptionsController implements Initializable {
             ((Stage) newGameButton.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @FXML
     private void onLoadGameClicked(MouseEvent event) {
-        
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select file");
+        File file = fileChooser.showOpenDialog(newGameButton.getScene().getWindow());
+        if (file == null) {
+            return;
+        }
+
+        try {
+            ChessLoader loader = new ChessLoader();
+            Game game = loader.loadGame(file);
+            startGame(game);
+
+        } catch (Exception ex) {
+            AlertUtils.showInfoDialog("Loading failed", "Error");
+            Logger.getLogger(GameOptionsController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void startGame(Game game) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/chessFXML.fxml"));
+
+            Parent root = loader.load();
+            ChessFXMLController controller = loader.getController();
+            controller.setupGame(game);
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            stage.show();
+            ((Stage) newGameButton.getScene().getWindow()).close();
+
+        } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
+            Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
@@ -89,12 +130,13 @@ public class GameOptionsController implements Initializable {
             ((Stage) newGameButton.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @FXML
-    private void goToMainMenu(){
+    private void goToMainMenu() {
         try {
             Stage stage = new Stage();
             FXMLLoader loader = new FXMLLoader();
@@ -109,8 +151,9 @@ public class GameOptionsController implements Initializable {
             ((Stage) newGameButton.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }

@@ -57,6 +57,7 @@
             <Menu mnemonicParsing="false" text="Menu">
                <items>
                   <MenuItem fx:id="mainMenu" mnemonicParsing="false" onAction="#goToMainMenu" text="Go to Main Menu" />
+                  <MenuItem fx:id="saveGame" mnemonicParsing="false" onAction="#saveGame" text="Save game" />
                </items>
             </Menu>
          </menus>

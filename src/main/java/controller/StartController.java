@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import model.chess.AlertUtils;
 
 /**
  * FXML Controller class
@@ -55,6 +56,7 @@ public class StartController implements Initializable {
             ((Stage) playButton.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

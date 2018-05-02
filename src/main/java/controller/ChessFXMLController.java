@@ -5,6 +5,7 @@
  */
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import model.chess.Board;
 import model.chess.Color;
@@ -19,6 +20,7 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,8 +30,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -37,11 +37,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.chess.ChessSaver;
 import model.chess.ChessTimer;
 import model.chess.ComputerPlayer;
 import model.chess.Duration;
 import model.pieces.King;
+import model.chess.AlertUtils;
 
 /**
  * FXML Controller class
@@ -67,29 +70,42 @@ public class ChessFXMLController implements Initializable, Observer {
     private Label whiteTimerLabel;
     @FXML
     private MenuItem mainMenu;
+    @FXML
+    private MenuItem saveGame;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
     }
 
     public void setupGame(Game game) {
         this.game = game;
         game.addObserver(this);
         setupPlayers();
+        game.checkForSpecialSituation();
         game.startGame();
         startTimers();
         draw();
     }
 
     private void startTimers() {
-        whiteTimerLabel.setText(new Duration(Game.DURATION).toString());
+        whiteTimerLabel.setText(game.getPlayerByColor(Color.WHITE).getTime().toString());
         whiteTimer = new ChessTimer(game, game.getPlayerByColor(Color.WHITE), whiteTimerLabel);
         whiteTimer.run();
 
-        blackTimerLabel.setText(new Duration(Game.DURATION).toString());
+        blackTimerLabel.setText(game.getPlayerByColor(Color.BLACK).getTime().toString());
         blackTimer = new ChessTimer(game, game.getPlayerByColor(Color.BLACK), blackTimerLabel);
         blackTimer.run();
+    }
+
+    private void pauseTimers() {
+        whiteTimer.pause();
+        blackTimer.pause();
+    }
+
+    private void resumeTimers() {
+        whiteTimer.resume();
+        blackTimer.resume();
     }
 
     private void stopTimers() {
@@ -141,7 +157,7 @@ public class ChessFXMLController implements Initializable, Observer {
         return pane;
     }
 
-    private void setupClickListener(Pane pane) {
+    private void setupClickListener(final Pane pane) {
         pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -223,32 +239,22 @@ public class ChessFXMLController implements Initializable, Observer {
         return !pane.getChildren().isEmpty();
     }
 
-    private void showInfoDialog(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Game over");
-        alert.setContentText(message);
-
-        alert.showAndWait();
-    }
-
     @Override
     public void update(Observable o, Object arg) {
         draw();
         if (game.isCheckmate()) {
-            showInfoDialog(game.getWaitingPlayer().getName() + " wins!!!");
             stopTimers();
-
+            AlertUtils.showInfoDialog(game.getWaitingPlayer().getName() + " wins!!!", "Game Over");
         }
         if (game.isStalemate()) {
-            showInfoDialog("It is a stalemate!!!");
+            AlertUtils.showInfoDialog("It is a stalemate!!!", "Game Over");
             stopTimers();
         }
         if (game.isOutOfTime()) {
             if (game.getPlayer1().getTime().getSeconds() == 0) {
-                showInfoDialog(game.getPlayer1() + "wins!!!");
+                AlertUtils.showInfoDialog(game.getPlayer1() + "wins!!!", "Game Over");
             } else {
-                showInfoDialog(game.getPlayer2() + "wins!!!");
+                AlertUtils.showInfoDialog(game.getPlayer2() + "wins!!!", "Game Over");
             }
         }
     }
@@ -269,8 +275,31 @@ public class ChessFXMLController implements Initializable, Observer {
             ((Stage) board.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @FXML
+    private void saveGame(ActionEvent event) {
+        pauseTimers();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save file");
+        FileChooser.ExtensionFilter extFilter
+                = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(board.getScene().getWindow());
+        
+        if (file != null) {
+            try {
+                ChessSaver saver = new ChessSaver();
+                saver.save(game, file);
+            } catch (IOException ex) {
+                AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
+                Logger.getLogger(ChessFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        resumeTimers();
     }
 
 }

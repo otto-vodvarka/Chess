@@ -35,6 +35,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import model.chess.AlertUtils;
 import model.chess.ComputerPlayer;
 
 /**
@@ -109,6 +110,7 @@ public class GameSetupController implements Initializable {
             ((Stage) newGameButton.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -146,17 +148,17 @@ public class GameSetupController implements Initializable {
 
     private boolean isDataCorrect() {
         if (player1ChoiceBox.getValue().equals("Computer") && player2ChoiceBox.getValue().equals("Computer")) {
-            showInfoDialoag("At least one player has to be human");
+            AlertUtils.showInfoDialog("At least one player has to be human","Incorrect data");
             return false;
         }
         
         if (player1EditText.getText().isEmpty() || player2EditText.getText().isEmpty()){
-            showInfoDialoag("Every player needs to have a name");
+            AlertUtils.showInfoDialog("Every player needs to have a name","Incorrect data");
             return false;
         }
         
         if (player1EditText.getText().length() > 15 || player2EditText.getText().length() > 15){
-            showInfoDialoag("Maximal length of name is 15 characters");
+            AlertUtils.showInfoDialog("Maximal length of name is 15 characters","Incorrect data");
             return false;
         }
         
@@ -177,15 +179,6 @@ public class GameSetupController implements Initializable {
             player2ColorLabel.setText("t");
         }
     }
-
-    private void showInfoDialoag(String message) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Incorrect data");
-        alert.setContentText(message);
-
-        alert.showAndWait();
-    }
     
     @FXML
     private void goToMainMenu(){
@@ -203,6 +196,7 @@ public class GameSetupController implements Initializable {
             ((Stage) newGameButton.getScene().getWindow()).close();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(GameSetupController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

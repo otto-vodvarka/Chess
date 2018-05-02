@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.chess.AlertUtils;
 
 /**
  *
@@ -29,6 +30,7 @@ public class Chess extends Application {
             primaryStage.show();
 
         } catch (IOException ex) {
+            AlertUtils.showInfoDialog("Sorry, please contact us if you have this error frequently", "Error");
             Logger.getLogger(Chess.class.getName()).log(Level.SEVERE, null, ex);
         }
 

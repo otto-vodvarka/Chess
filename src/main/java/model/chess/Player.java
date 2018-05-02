@@ -48,6 +48,10 @@ public abstract class Player extends Observable{
         return inCheck;
     }
 
+    public void setTime(Duration time) {
+        this.time = time;
+    }
+
     public Duration getTime() {
         return time;
     }

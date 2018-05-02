@@ -20,6 +20,8 @@ public class ChessTimer implements Runnable {
     private final Player player;
     private final Label timerLabel;
     
+    private boolean pause;
+    
     Timer timer = new Timer();
 
     public ChessTimer(Game game, Player player, Label timerLabel) {
@@ -33,7 +35,7 @@ public class ChessTimer implements Runnable {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (game.getPlayerOnMove() == player) {
+                if (game.getPlayerOnMove() == player && !pause) {
                     player.getTime().decrease();
                     Platform.runLater(new Runnable() {
                         @Override
@@ -53,6 +55,14 @@ public class ChessTimer implements Runnable {
                 }
             }
         }, 0, 1000);
+    }
+    
+    public void pause(){
+        pause = true;
+    }
+    
+    public void resume(){
+        pause = false;
     }
     
     public void stop(){
