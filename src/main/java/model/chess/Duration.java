@@ -13,6 +13,10 @@ public class Duration {
 
     private int seconds;
 
+    /**
+     * 
+     * @param seconds
+     */
     public Duration(int seconds) {
         this.seconds = seconds;
     }
@@ -21,6 +25,9 @@ public class Duration {
         return seconds;
     }
 
+    /**
+     * Decrease countdown by 1 second
+     */
     public void decrease() {
         seconds--;
     }

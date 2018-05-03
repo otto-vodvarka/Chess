@@ -8,8 +8,6 @@ package model.chess;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import model.pieces.*;
 import org.json.JSONArray;
@@ -21,6 +19,12 @@ import org.json.JSONObject;
  */
 public class ChessLoader {
 
+    /**
+     * Load game from file
+     * @param file file to be loaded
+     * @return instance of game
+     * @throws Exception
+     */
     public Game loadGame(File file) throws Exception {
 
         String s = "";

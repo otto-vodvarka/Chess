@@ -24,6 +24,12 @@ public class ChessTimer implements Runnable {
     
     Timer timer = new Timer();
 
+    /**
+     *
+     * @param game
+     * @param player
+     * @param timerLabel
+     */
     public ChessTimer(Game game, Player player, Label timerLabel) {
         this.game = game;
         this.player = player;
@@ -57,14 +63,23 @@ public class ChessTimer implements Runnable {
         }, 0, 1000);
     }
     
+    /**
+     * Pauses countdown
+     */
     public void pause(){
         pause = true;
     }
     
+    /**
+     * Resumes countdown
+     */
     public void resume(){
         pause = false;
     }
     
+    /**
+     * Terminates countdown
+     */
     public void stop(){
         timer.cancel();
     }

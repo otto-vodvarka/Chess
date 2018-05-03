@@ -18,6 +18,12 @@ import org.json.JSONObject;
  */
 public class ChessSaver {
 
+    /**
+     * Saves game to text file in JSON format
+     * @param game game to be saved
+     * @param file selected file
+     * @throws IOException
+     */
     public void save(Game game, File file) throws IOException {
         try (
                 FileWriter out = new FileWriter(file)) {

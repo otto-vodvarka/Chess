@@ -13,6 +13,11 @@ import javafx.scene.control.Alert;
  */
 public class AlertUtils {
     
+    /**
+     *  Shows information dailog
+     * @param message body of information
+     * @param header
+     */
     public static void showInfoDialog(String message, String header) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");

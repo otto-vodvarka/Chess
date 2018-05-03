@@ -15,6 +15,10 @@ public enum Color {
     
     WHITE,BLACK;
     
+    /**
+     *
+     * @return opposite color, for BLACK return WHITE and for WHITE return BLACK
+     */
     public Color opposite() {
         if (this == WHITE) {
             return BLACK;

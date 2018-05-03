@@ -24,6 +24,12 @@ public class Move {
 
     private MoveType moveType;
 
+    /**
+     *
+     * @param board
+     * @param start
+     * @param end
+     */
     public Move(Board board, Coordinate start, Coordinate end) {
         this.board = board;
         this.start = start;
@@ -31,6 +37,12 @@ public class Move {
         setMoveType(board, board.getPieceAt(start).getColor());
     }
 
+    /**
+     *
+     * @param board
+     * @param piece
+     * @param end
+     */
     public Move(Board board, Piece piece, Coordinate end) {
         this.board = board;
         this.start = board.findPiece(piece);
@@ -78,6 +90,10 @@ public class Move {
         return start;
     }
 
+    /**
+     * 
+     * @return True if both start nad end of move is on board
+     */
     public boolean isAtBoard() {
         return start.getX() >= 0 && start.getX() < Board.BOARD_SIZE
                 && start.getY() >= 0 && start.getY() < Board.BOARD_SIZE
@@ -85,6 +101,10 @@ public class Move {
                 && end.getY() >= 0 && end.getY() < Board.BOARD_SIZE;
     }
 
+    /**
+     * Switch start and end of move
+     * @return new Move
+     */
     public Move invertMove() {
         return new Move(board, end, start);
     }
@@ -209,6 +229,11 @@ public class Move {
 
     }
 
+    /**
+     *
+     * @param color
+     * @return move of rook when castling
+     */
     public Move getCastlingRookMove(Color color) {
         Move moveRook = null;
         //white small castling
@@ -230,18 +255,34 @@ public class Move {
         return moveRook;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isPawnJump() {
         return moveType == MoveType.PAWNJUMP;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isCastling() {
         return moveType == MoveType.CASTLING;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isEnPassant() {
         return moveType == MoveType.ENPASSANT;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isPromotion() {
         return moveType == MoveType.PROMOTION;
     }

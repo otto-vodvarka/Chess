@@ -20,33 +20,51 @@ import java.util.Observable;
  *
  * @author ottovodvarka
  */
-public class Board extends Observable{
+public class Board extends Observable {
 
+    /**
+     * Number of spots on each row and column
+     */
     public static final int BOARD_SIZE = 8;
 
     private Spot[][] spots;
     private Move lastMove;
 
+    /**
+     * Create board with standard setup
+     */
     public Board() {
         spots = new Spot[BOARD_SIZE][BOARD_SIZE];
         setupPieces();
     }
 
+    /**
+     * Board with custom setup
+     *
+     * @param spots
+     */
     public Board(Spot[][] spots) {
-        this.spots = new Spot[BOARD_SIZE][BOARD_SIZE]; 
+        this.spots = new Spot[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                if(spots[i][j] != null){
+                if (spots[i][j] != null) {
                     this.spots[i][j] = spots[i][j];
-                }else{
+                } else {
                     this.spots[i][j] = new Spot();
                 }
             }
         }
     }
 
+    /**
+     * Move piece on board and send notification to observers
+     *
+     * @param move
+     */
     public void moveTo(Move move) {
-        if(move == null) return;
+        if (move == null) {
+            return;
+        }
         Piece piece = getPieceAt(move.getStart());
         if (move.isCastling()) {
             castle(piece, move);
@@ -69,6 +87,12 @@ public class Board extends Observable{
         notifyObservers();
     }
 
+    /**
+     * Move piece on board and send notification to observers
+     *
+     * @param piece selected piece
+     * @param coord target coordinates
+     */
     public void moveTo(Piece piece, Coordinate coord) {
         Move move = new Move(this, piece, coord);
         moveTo(move);
@@ -111,10 +135,20 @@ public class Board extends Observable{
         addPiece(piece, move.getEnd());
     }
 
+    /**
+     * Adds piece to board
+     *
+     * @param piece
+     * @param coord target coordinates
+     */
     public void addPiece(Piece piece, Coordinate coord) {
         spots[coord.getY()][coord.getX()] = new Spot(piece);
     }
 
+    /**
+     *  Remove piece from board
+     * @param piece
+     */
     public void removePiece(Piece piece) {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -126,6 +160,10 @@ public class Board extends Observable{
         }
     }
 
+    /**
+     *Remove piece from board
+     * @param coord target coordinates
+     */
     public void removePieceAt(Coordinate coord) {
         int x = coord.getY();
         int y = coord.getX();
@@ -133,15 +171,24 @@ public class Board extends Observable{
             spots[x][y].removePiece();
         }
     }
-    
+
+    /**
+     *  
+     * @param coord
+     * @return piece if present or null
+     */
     public boolean hasPiece(Coordinate coord) {
         if (getPieceAt(coord) == null) {
             return false;
         }
         return true;
     }
-    
-    public int getNumberOfPieces(){
+
+    /**
+     *
+     * @return number of pieces in play
+     */
+    public int getNumberOfPieces() {
         int count = 0;
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -153,6 +200,12 @@ public class Board extends Observable{
         return count;
     }
 
+    /**
+     *
+     * @param piece
+     * @param row
+     * @return True if piece is present on that row otherwise returns False
+     */
     public boolean isOnRow(Piece piece, int row) {
         for (int i = 0; i < BOARD_SIZE; i++) {
             if (spots[row][i] != null && spots[row][i].getPiece() == piece) {
@@ -162,6 +215,11 @@ public class Board extends Observable{
         return false;
     }
 
+    /**
+     *
+     * @param color Color of player
+     * @return true if player is in check
+     */
     public boolean isInCheck(Color color) {
         Coordinate kingCoord = findKing(color);
         for (Move move : getAllAvailableMovesByColor(color.opposite())) {
@@ -171,11 +229,21 @@ public class Board extends Observable{
         }
         return false;
     }
-    
-    public boolean isStalemate(Color color){
+
+    /**
+     *
+     * @param color Color of player
+     * @return true if player is in stalemate
+     */
+    public boolean isStalemate(Color color) {
         return !isInCheck(color) && getAllLegalMovesByColor(color).isEmpty();
     }
 
+    /**
+     *
+     * @param color Color of player
+     * @return True if player is checkmated
+     */
     public boolean isCheckMate(Color color) {
         if (isInCheck(color) && getAllLegalMovesByColor(color).isEmpty()) {
             return true;
@@ -183,6 +251,13 @@ public class Board extends Observable{
         return false;
     }
 
+    /**
+     * Makes a move, check player for check and then undo the move
+     *
+     * @param move
+     * @param color
+     * @return
+     */
     public boolean isInCheckAfterThisMove(Move move, Color color) {
         if (move.isCastling()) {
             return false;
@@ -198,7 +273,11 @@ public class Board extends Observable{
         return check;
     }
 
-    //all moves including moves, which causes check
+    /**
+     *
+     * @param color Color of player
+     * @return list of moves including ones, which causes check
+     */
     public List<Move> getAllAvailableMovesByColor(Color color) {
         List<Move> moves = new ArrayList<>();
         for (Piece piece : getAllPiecesbyColor(color)) {
@@ -207,7 +286,11 @@ public class Board extends Observable{
         return moves;
     }
 
-    //all moves that are available to player
+    /**
+     * 
+     * @param color color of player
+     * @return list of moves, which are available to player according to rules
+     */
     public List<Move> getAllLegalMovesByColor(Color color) {
         List<Move> moves = new ArrayList<>();
         for (Piece piece : getAllPiecesbyColor(color)) {
@@ -215,7 +298,12 @@ public class Board extends Observable{
         }
         return moves;
     }
-    
+
+    /**
+     *
+     * @param piece
+     * @return coordinates of piece if present otherwise returns null
+     */
     public Coordinate findPiece(Piece piece) {
         Coordinate coord = null;
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -228,6 +316,11 @@ public class Board extends Observable{
         return coord;
     }
 
+    /**
+     * 
+     * @param color color of king
+     * @return coordinates of king
+     */
     public Coordinate findKing(Color color) {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -240,7 +333,12 @@ public class Board extends Observable{
         }
         return null;
     }
-    
+
+    /**
+     *
+     * @param color color of bishop
+     * @return coordinates of bishop
+     */
     public Piece getBishop(Color color) {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -254,6 +352,11 @@ public class Board extends Observable{
         return null;
     }
 
+    /**
+     *
+     * @param color
+     * @return list of pieces with specefied color
+     */
     public List<Piece> getAllPiecesbyColor(Color color) {
         List<Piece> pieces = new ArrayList<>();
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -266,7 +369,12 @@ public class Board extends Observable{
         }
         return pieces;
     }
-    
+
+    /**
+     *
+     * @param coord
+     * @return piece if present on specified coordinates otherwise null
+     */
     public Piece getPieceAt(Coordinate coord) {
         Spot spot = spots[coord.getY()][coord.getX()];
         if (spot != null) {
@@ -275,14 +383,29 @@ public class Board extends Observable{
         return null;
     }
 
+    /**
+     *
+     * @param coord
+     * @return spot on specified coords
+     */
     public Spot getSpot(Coordinate coord) {
         return spots[coord.getY()][coord.getX()];
     }
 
+    /**
+     *
+     * @return last move made on board
+     */
     public Move getLastMove() {
         return lastMove;
     }
-    
+
+    /**
+     *
+     * @param move 
+     * @param color
+     * @return True if move iscastling and is permitted
+     */
     public boolean IsCastlingAvailable(Move move, Color color) {
         //white small castling
         if (color == Color.WHITE && move.getEnd().equals(new Coordinate(6, 7))) {

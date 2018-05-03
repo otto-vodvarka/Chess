@@ -16,6 +16,9 @@ import model.pieces.Piece;
  */
 public class Game extends Observable implements Observer {
     
+    /**
+     *  Seconds, that each player has
+     */
     public static int DURATION = 900;
 
     private final Board board;
@@ -32,6 +35,12 @@ public class Game extends Observable implements Observer {
     private boolean stalemate;
     private boolean outOfTime;
 
+    /**
+     *
+     * @param board
+     * @param player1
+     * @param player2
+     */
     public Game(Board board, Player player1, Player player2) {
         this.board = board;
         this.player1 = player1;
@@ -44,10 +53,18 @@ public class Game extends Observable implements Observer {
         board.addObserver(this);
     }
 
+    /**
+     * Start the game loop
+     */
     public void startGame() {
         playerOnMove.play(this);
     }
 
+    /**
+     *
+     * @param color
+     * @return Player with that color
+     */
     public Player getPlayerByColor(Color color) {
         if (player1.getColor() == color) {
             return player1;
@@ -55,6 +72,11 @@ public class Game extends Observable implements Observer {
         return player2;
     }
 
+    /**
+     *
+     * @param player
+     * @return the opposite player
+     */
     public Player getOtherPlayer(Player player) {
         if (player == player1) {
             return player2;
@@ -81,7 +103,7 @@ public class Game extends Observable implements Observer {
     public boolean isCheckmate() {
         return checkmate;
     }
-    
+
     public void setStalemate(boolean stalemate) {
         this.stalemate = stalemate;
     }
@@ -102,18 +124,30 @@ public class Game extends Observable implements Observer {
         return selectedPiece;
     }
 
+    /**
+     * Put piece to selected one and also its coordinates and retrieve all legal moves of that piece
+     * @param selectedPiece
+     */
     public void setSelectedPiece(Piece selectedPiece) {
         this.selectedPiece = selectedPiece;
         this.selectedPieceCoords = board.findPiece(selectedPiece);
         this.legalMoves = board.getAllLegalMovesByColor(selectedPiece.getColor());
     }
 
+    /**
+     * Null the selected piece
+     */
     public void unselectPiece() {
         this.selectedPiece = null;
         this.selectedPieceCoords = null;
         this.legalMoves = null;
     }
 
+    /**
+     *
+     * @param piece
+     * @return true if piece is selcted
+     */
     public boolean isSelectedPiece(Piece piece) {
         return piece == selectedPiece;
     }
@@ -122,6 +156,10 @@ public class Game extends Observable implements Observer {
         return selectedPieceCoords;
     }
 
+    /**
+     *
+     * @return True if some piece is selected
+     */
     public boolean isSomePieceSelected() {
         return selectedPiece != null;
     }
@@ -130,6 +168,11 @@ public class Game extends Observable implements Observer {
         return legalMoves;
     }
 
+    /**
+     * Is move in list of legal moves
+     * @param move
+     * @return
+     */
     public boolean isMoveAvailable(Move move) {
         return legalMoves.contains(move);
     }
@@ -149,6 +192,9 @@ public class Game extends Observable implements Observer {
         return player1;
     }
 
+    /**
+     * Makes waiting player a player on move
+     */
     public void switchPlayers() {
         if (playerOnMove == player1) {
             playerOnMove = player2;
@@ -167,6 +213,9 @@ public class Game extends Observable implements Observer {
         playerOnMove.play(this);
     }
 
+    /**
+     * Check for both players check, checkmate and stalemate
+     */
     public void checkForSpecialSituation() {
         isInCheck(getWaitingPlayer());
         isInCheck(getPlayerOnMove());

@@ -78,6 +78,10 @@ public class ChessFXMLController implements Initializable, Observer {
 
     }
 
+    /**
+     * Initialize all labels, timers and starts game loop 
+     * @param game
+     */
     public void setupGame(Game game) {
         this.game = game;
         game.addObserver(this);
@@ -123,7 +127,7 @@ public class ChessFXMLController implements Initializable, Observer {
         }
     }
 
-    public void draw() {
+    private void draw() {
         board.getChildren().clear();
         for (int i = 0; i < Board.BOARD_SIZE; i++) {
             for (int j = 0; j < Board.BOARD_SIZE; j++) {

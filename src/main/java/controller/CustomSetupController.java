@@ -92,7 +92,7 @@ public class CustomSetupController implements Initializable {
         draw();
     }
 
-    public void draw() {
+    private void draw() {
         drawBoard();
         drawPieces();
     }

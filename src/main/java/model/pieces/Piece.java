@@ -21,18 +21,40 @@ public abstract class Piece {
     protected final Color color;
     protected boolean moved;
 
+    /**
+     *
+     * @param color
+     */
     public Piece(Color color) {
         this.color = color;
     }
 
+    /**
+     * 
+     * @param board
+     * @param move
+     * @return True if move is valid
+     */
     public abstract boolean isMoveValid(Board board, Move move);
 
-    //All moves including moves that creates check
+    /**
+     * 
+     * @param board
+     * @return List of moves including moves that creates check
+     */
     public abstract List<Move> getAllAvailableMoves(Board board);
 
+    /**
+     *
+     * @return String represantation for specific piece
+     */
     public abstract String getTextRepresantation();
 
-    //All moves excluding moves that creates check
+    /**
+     *
+     * @param board
+     * @return list of moves according to rules
+     */
     public List<Move> getAllLegalMoves(Board board) {
         List<Move> moves = new ArrayList<>();
         for (Move move : getAllAvailableMoves(board)) {
@@ -43,6 +65,11 @@ public abstract class Piece {
         return moves;
     }
 
+    /**
+     *
+     * @param target target piece
+     * @return true if piece is same color as this one, false when null
+     */
     protected boolean istargetPieceMine(Piece target) {
         if (target == null) {
             return false;
@@ -50,6 +77,12 @@ public abstract class Piece {
         return target.color == this.color;
     }
 
+    /**
+     * 
+     * @param board
+     * @param move
+     * @return true if move path is not blocked by other piece
+     */
     protected boolean isPathBlocked(Board board, Move move) {
         int xDifference = move.getStartX() - move.getEndX();
         int yDifference = move.getStartY() - move.getEndY();

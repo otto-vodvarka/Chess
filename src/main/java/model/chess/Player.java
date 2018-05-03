@@ -56,6 +56,11 @@ public abstract class Player extends Observable{
         return time;
     }
     
+    /**
+     * Start player's turn
+     * In case of AI, vomputer makes a move
+     * @param game
+     */
     public abstract void play(Game game);
     
 }
