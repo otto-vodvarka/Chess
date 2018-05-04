@@ -5,6 +5,10 @@
  */
 package model.chess;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Formatter;
+
 /**
  *
  * @author ottovodvarka
@@ -34,7 +38,10 @@ public class Duration {
 
     @Override
     public String toString() {
-        return seconds / 60 + " : " + seconds % 60;
+        StringBuilder sbuf = new StringBuilder();
+        Formatter fmt = new Formatter(sbuf);
+        fmt.format("%02d:%02d", seconds / 60, seconds % 60);
+        return sbuf.toString();
     }
 
 }

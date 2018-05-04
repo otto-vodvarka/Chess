@@ -165,7 +165,7 @@ public class ChessFXMLController implements Initializable, Observer {
         pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (game.isCheckmate() || game.isStalemate() || game.getPlayerOnMove() instanceof ComputerPlayer) {
+                if (game.isCheckmate() || game.isStalemate() || game.isOutOfTime() || game.getPlayerOnMove() instanceof ComputerPlayer) {
                     return;
                 }
                 int x = GridPane.getColumnIndex(pane);
@@ -255,10 +255,11 @@ public class ChessFXMLController implements Initializable, Observer {
             stopTimers();
         }
         if (game.isOutOfTime()) {
+            stopTimers();
             if (game.getPlayer1().getTime().getSeconds() == 0) {
-                AlertUtils.showInfoDialog(game.getPlayer1() + "wins!!!", "Game Over");
+                AlertUtils.showInfoDialog(game.getPlayer2().getName() + "wins!!!", "Game Over");
             } else {
-                AlertUtils.showInfoDialog(game.getPlayer2() + "wins!!!", "Game Over");
+                AlertUtils.showInfoDialog(game.getPlayer1().getName() + "wins!!!", "Game Over");
             }
         }
     }

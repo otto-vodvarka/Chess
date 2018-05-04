@@ -175,7 +175,7 @@ public class Board extends Observable {
     /**
      *  
      * @param coord
-     * @return piece if present or null
+     * @return true if piece is present
      */
     public boolean hasPiece(Coordinate coord) {
         if (getPieceAt(coord) == null) {
@@ -376,6 +376,7 @@ public class Board extends Observable {
      * @return piece if present on specified coordinates otherwise null
      */
     public Piece getPieceAt(Coordinate coord) {
+        if(coord.getX() < 0 || coord.getX() >= Board.BOARD_SIZE || coord.getY() < 0 || coord.getY() >= Board.BOARD_SIZE) return null;
         Spot spot = spots[coord.getY()][coord.getX()];
         if (spot != null) {
             return spot.getPiece();
@@ -404,9 +405,9 @@ public class Board extends Observable {
      *
      * @param move 
      * @param color
-     * @return True if move iscastling and is permitted
+     * @return True if move is castling and is permitted
      */
-    public boolean IsCastlingAvailable(Move move, Color color) {
+    public boolean isCastlingAvailable(Move move, Color color) {
         //white small castling
         if (color == Color.WHITE && move.getEnd().equals(new Coordinate(6, 7))) {
             Move move1 = new Move(this, move.getStart(), new Coordinate(move.getEndX() - 1, move.getEndY()));

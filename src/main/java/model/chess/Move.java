@@ -34,7 +34,7 @@ public class Move {
         this.board = board;
         this.start = start;
         this.end = end;
-        setMoveType(board, board.getPieceAt(start).getColor());
+        setMoveType(board, board.getPieceAt(start));
     }
 
     /**
@@ -47,7 +47,7 @@ public class Move {
         this.board = board;
         this.start = board.findPiece(piece);
         this.end = end;
-        setMoveType(board, piece.getColor());
+        setMoveType(board, piece);
     }
 
     public int getStartX() {
@@ -109,12 +109,13 @@ public class Move {
         return new Move(board, end, start);
     }
 
-    private void setMoveType(Board board, Color color) {
+    private void setMoveType(Board board, Piece piece) {
         moveType = MoveType.REGULAR;
+        if(piece == null) return;
         setPawnJumpIfTrue(board);
-        setCastlingIfTrue(board, color);
-        setEnpassantIfTrue(board, color);
-        setPromotionIfTrue(board, color);
+        setCastlingIfTrue(board, piece.getColor());
+        setEnpassantIfTrue(board, piece.getColor());
+        setPromotionIfTrue(board, piece.getColor());
     }
 
     private void setPawnJumpIfTrue(Board board) {

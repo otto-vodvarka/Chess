@@ -114,6 +114,8 @@ public class Game extends Observable implements Observer {
 
     public void setOutOfTime(boolean outOfTime) {
         this.outOfTime = outOfTime;
+        setChanged();
+        notifyObservers();
     }
 
     public boolean isOutOfTime() {

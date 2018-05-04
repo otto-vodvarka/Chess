@@ -5,38 +5,28 @@
  */
 package model.chess;
 
+import java.util.ArrayList;
 import java.util.List;
-import model.pieces.Piece;
+
+import model.pieces.*;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author ottovodvarka
  */
 public class BoardTest {
-    
+
     private Board board;
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
+
     @Before
     public void setUp() {
         board = new Board();
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -45,13 +35,13 @@ public class BoardTest {
     @Test
     public void testMoveTo_Move() {
         assertNotNull(board.getPieceAt(new Coordinate(3, 6)));
-        
+
         Move move = new Move(board, new Coordinate(3, 6), new Coordinate(3, 4));
         board.moveTo(move);
-        
+
         Piece pieceStart = board.getPieceAt(new Coordinate(3, 6));
         Piece pieceEnd = board.getPieceAt(new Coordinate(3, 4));
-        
+
         assertNull(pieceStart);
         assertNotNull(pieceEnd);
     }
@@ -61,13 +51,14 @@ public class BoardTest {
      */
     @Test
     public void testMoveTo_Piece_Coordinate() {
-        System.out.println("moveTo");
-        Piece piece = null;
-        Coordinate coord = null;
-        Board instance = new Board();
-        instance.moveTo(piece, coord);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Piece piece = board.getPieceAt(new Coordinate(3, 6));
+        board.moveTo(piece, new Coordinate(3, 4));
+
+        Piece pieceStart = board.getPieceAt(new Coordinate(3, 6));
+        Piece pieceEnd = board.getPieceAt(new Coordinate(3, 4));
+
+        assertNull(pieceStart);
+        assertNotNull(pieceEnd);
     }
 
     /**
@@ -75,13 +66,12 @@ public class BoardTest {
      */
     @Test
     public void testAddPiece() {
-        System.out.println("addPiece");
-        Piece piece = null;
-        Coordinate coord = null;
-        Board instance = new Board();
-        instance.addPiece(piece, coord);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Piece piece = new Queen(Color.WHITE);
+        Coordinate coord = new Coordinate(5, 5);
+
+        board.addPiece(piece, coord);
+
+        assertEquals(piece, board.getPieceAt(new Coordinate(5, 5)));
     }
 
     /**
@@ -89,12 +79,12 @@ public class BoardTest {
      */
     @Test
     public void testRemovePiece() {
-        System.out.println("removePiece");
-        Piece piece = null;
-        Board instance = new Board();
-        instance.removePiece(piece);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull(board.getPieceAt(new Coordinate(3, 6)));
+
+        Piece piece = board.getPieceAt(new Coordinate(3, 6));
+        board.removePiece(piece);
+
+        assertNull(board.getPieceAt(new Coordinate(3, 6)));
     }
 
     /**
@@ -102,12 +92,11 @@ public class BoardTest {
      */
     @Test
     public void testRemovePieceAt() {
-        System.out.println("removePieceAt");
-        Coordinate coord = null;
-        Board instance = new Board();
-        instance.removePieceAt(coord);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull(board.getPieceAt(new Coordinate(3, 6)));
+
+        board.removePieceAt(new Coordinate(3, 6));
+
+        assertNull(board.getPieceAt(new Coordinate(3, 6)));
     }
 
     /**
@@ -115,14 +104,8 @@ public class BoardTest {
      */
     @Test
     public void testHasPiece() {
-        System.out.println("hasPiece");
-        Coordinate coord = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.hasPiece(coord);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(board.hasPiece(new Coordinate(3, 5)));
+        assertTrue(board.hasPiece(new Coordinate(3, 6)));
     }
 
     /**
@@ -130,13 +113,12 @@ public class BoardTest {
      */
     @Test
     public void testGetNumberOfPieces() {
-        System.out.println("getNumberOfPieces");
-        Board instance = new Board();
-        int expResult = 0;
-        int result = instance.getNumberOfPieces();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(32, board.getNumberOfPieces());
+
+        board.removePieceAt(new Coordinate(0, 0));
+        board.removePieceAt(new Coordinate(7, 7));
+
+        assertEquals(30, board.getNumberOfPieces());
     }
 
     /**
@@ -144,15 +126,10 @@ public class BoardTest {
      */
     @Test
     public void testIsOnRow() {
-        System.out.println("isOnRow");
-        Piece piece = null;
-        int row = 0;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isOnRow(piece, row);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Piece piece = board.getPieceAt(new Coordinate(3, 6));
+
+        assertTrue(board.isOnRow(piece, 6));
+        assertFalse(board.isOnRow(piece, 2));
     }
 
     /**
@@ -160,14 +137,12 @@ public class BoardTest {
      */
     @Test
     public void testIsInCheck() {
-        System.out.println("isInCheck");
-        Color color = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isInCheck(color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(board.isInCheck(Color.BLACK));
+
+        board.moveTo(new Move(board, new Coordinate(5, 7), new Coordinate(7, 3)));
+        board.removePieceAt(new Coordinate(5, 1));
+
+        assertTrue(board.isInCheck(Color.BLACK));
     }
 
     /**
@@ -175,14 +150,19 @@ public class BoardTest {
      */
     @Test
     public void testIsStalemate() {
-        System.out.println("isStalemate");
-        Color color = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isStalemate(color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(board.isStalemate(Color.BLACK));
+
+        board = new Board(new Spot[Board.BOARD_SIZE][Board.BOARD_SIZE]);
+
+        Piece whiteKing = new King(Color.WHITE);
+        Piece blackKing = new King(Color.BLACK);
+        Piece whiteQueen = new Queen(Color.WHITE);
+
+        board.addPiece(whiteKing, new Coordinate(5, 1));
+        board.addPiece(whiteQueen, new Coordinate(6, 2));
+        board.addPiece(blackKing, new Coordinate(7, 0));
+
+        assertTrue(board.isStalemate(Color.BLACK));
     }
 
     /**
@@ -190,14 +170,23 @@ public class BoardTest {
      */
     @Test
     public void testIsCheckMate() {
-        System.out.println("isCheckMate");
-        Color color = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isCheckMate(color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(board.isCheckMate(Color.BLACK));
+
+        board = new Board(new Spot[Board.BOARD_SIZE][Board.BOARD_SIZE]);
+
+        Piece whiteKing = new King(Color.WHITE);
+        Piece whiteQueen = new Queen(Color.WHITE);
+        Piece whiteRook = new Rook(Color.WHITE);
+        Piece blackKing = new King(Color.BLACK);
+
+        board.addPiece(whiteKing, new Coordinate(7, 7));
+        board.addPiece(whiteQueen, new Coordinate(1, 1));
+        board.addPiece(whiteRook, new Coordinate(0, 0));
+        board.addPiece(blackKing, new Coordinate(6, 0));
+
+        assertTrue(board.isCheckMate(Color.BLACK));
+        assertFalse(board.isCheckMate(Color.WHITE));
+
     }
 
     /**
@@ -205,45 +194,11 @@ public class BoardTest {
      */
     @Test
     public void testIsInCheckAfterThisMove() {
-        System.out.println("isInCheckAfterThisMove");
-        Move move = null;
-        Color color = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isInCheckAfterThisMove(move, color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+        Move move1 = new Move(board, new Coordinate(5, 7), new Coordinate(7,7));
+        assertFalse(board.isInCheckAfterThisMove(move1, Color.BLACK));
 
-    /**
-     * Test of getAllAvailableMovesByColor method, of class Board.
-     */
-    @Test
-    public void testGetAllAvailableMovesByColor() {
-        System.out.println("getAllAvailableMovesByColor");
-        Color color = null;
-        Board instance = new Board();
-        List<Move> expResult = null;
-        List<Move> result = instance.getAllAvailableMovesByColor(color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getAllLegalMovesByColor method, of class Board.
-     */
-    @Test
-    public void testGetAllLegalMovesByColor() {
-        System.out.println("getAllLegalMovesByColor");
-        Color color = null;
-        Board instance = new Board();
-        List<Move> expResult = null;
-        List<Move> result = instance.getAllLegalMovesByColor(color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Move move2 = new Move(board, new Coordinate(5, 7), new Coordinate(5, 1));
+        assertTrue(board.isInCheckAfterThisMove(move2, Color.BLACK));
     }
 
     /**
@@ -251,14 +206,13 @@ public class BoardTest {
      */
     @Test
     public void testFindPiece() {
-        System.out.println("findPiece");
-        Piece piece = null;
-        Board instance = new Board();
-        Coordinate expResult = null;
-        Coordinate result = instance.findPiece(piece);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+       Piece piece = new Pawn(Color.WHITE);
+
+       assertNull(board.findPiece(piece));
+
+       board.addPiece(piece, new Coordinate(4,4));
+
+       assertEquals(new Coordinate(4,4), board.findPiece(piece));
     }
 
     /**
@@ -266,14 +220,8 @@ public class BoardTest {
      */
     @Test
     public void testFindKing() {
-        System.out.println("findKing");
-        Color color = null;
-        Board instance = new Board();
-        Coordinate expResult = null;
-        Coordinate result = instance.findKing(color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(new Coordinate(4,0), board.findKing(Color.BLACK));
+        assertEquals(new Coordinate(4,7), board.findKing(Color.WHITE));
     }
 
     /**
@@ -281,14 +229,9 @@ public class BoardTest {
      */
     @Test
     public void testGetBishop() {
-        System.out.println("getBishop");
-        Color color = null;
-        Board instance = new Board();
-        Piece expResult = null;
-        Piece result = instance.getBishop(color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        board.removePieceAt(new Coordinate(5,0));
+        assertEquals(board.getPieceAt(new Coordinate(2,0)),
+                board.getBishop(Color.BLACK));
     }
 
     /**
@@ -296,14 +239,28 @@ public class BoardTest {
      */
     @Test
     public void testGetAllPiecesbyColor() {
-        System.out.println("getAllPiecesbyColor");
-        Color color = null;
-        Board instance = new Board();
-        List<Piece> expResult = null;
-        List<Piece> result = instance.getAllPiecesbyColor(color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        board = new Board(new Spot[Board.BOARD_SIZE][Board.BOARD_SIZE]);
+
+        Piece whiteKing = new King(Color.WHITE);
+        Piece whiteQueen = new Queen(Color.WHITE);
+        Piece whiteRook = new Rook(Color.WHITE);
+        Piece blackKing = new King(Color.BLACK);
+
+        List<Piece> whitePieces = new ArrayList<>();
+        whitePieces.add(whiteRook);
+        whitePieces.add(whiteQueen);
+        whitePieces.add(whiteKing);
+
+        List<Piece> blackPieces = new ArrayList<>();
+        blackPieces.add(blackKing);
+
+        board.addPiece(whiteKing, new Coordinate(7, 7));
+        board.addPiece(whiteQueen, new Coordinate(1, 1));
+        board.addPiece(whiteRook, new Coordinate(0, 0));
+        board.addPiece(blackKing, new Coordinate(6, 0));
+
+        assertEquals(whitePieces, board.getAllPiecesbyColor(Color.WHITE));
+        assertEquals(blackPieces, board.getAllPiecesbyColor(Color.BLACK));
     }
 
     /**
@@ -311,59 +268,26 @@ public class BoardTest {
      */
     @Test
     public void testGetPieceAt() {
-        System.out.println("getPieceAt");
-        Coordinate coord = null;
-        Board instance = new Board();
-        Piece expResult = null;
-        Piece result = instance.getPieceAt(coord);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Piece piece = new Pawn(Color.WHITE);
+        board.addPiece(piece, new Coordinate(4,4));
+
+        assertEquals(piece, board.getPieceAt(new Coordinate(4,4)));
+        assertNull(board.getPieceAt(new Coordinate(4,5)));
     }
 
     /**
-     * Test of getSpot method, of class Board.
-     */
-    @Test
-    public void testGetSpot() {
-        System.out.println("getSpot");
-        Coordinate coord = null;
-        Board instance = new Board();
-        Spot expResult = null;
-        Spot result = instance.getSpot(coord);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getLastMove method, of class Board.
-     */
-    @Test
-    public void testGetLastMove() {
-        System.out.println("getLastMove");
-        Board instance = new Board();
-        Move expResult = null;
-        Move result = instance.getLastMove();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of IsCastlingAvailable method, of class Board.
+     * Test of isCastlingAvailable method, of class Board.
      */
     @Test
     public void testIsCastlingAvailable() {
-        System.out.println("IsCastlingAvailable");
-        Move move = null;
-        Color color = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.IsCastlingAvailable(move, color);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Move castling = new Move(board, new Coordinate(4,7),new Coordinate(6,7));
+
+        assertFalse(board.isCastlingAvailable(castling, Color.WHITE));
+
+        board.removePieceAt(new Coordinate(5,7));
+        board.removePieceAt(new Coordinate(6,7));
+
+        assertTrue(board.isCastlingAvailable(castling, Color.WHITE));
     }
-    
+
 }

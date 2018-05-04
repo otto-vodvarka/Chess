@@ -31,7 +31,7 @@ public class King extends Piece {
         } else {
             if (board.getSpot(move.getEnd()) != null && !board.getSpot(move.getEnd()).isOccupied()) {
                 if (move.isCastling()) {
-                    if (board.IsCastlingAvailable(move, color)) {
+                    if (board.isCastlingAvailable(move, color)) {
                         return true;
                     }
                 }
